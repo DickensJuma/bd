@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('api')->group(function () {
+Route::prefix('v1')->group(function () {
     Route::group(['middleware' => 'jwt.refresh'], function () {
         Route::get('auth/refresh', 'API\AuthController@refresh');
     });

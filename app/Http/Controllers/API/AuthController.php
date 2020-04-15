@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use JWTAuth;
+
 
 class AuthController extends Controller
 {
@@ -24,7 +26,7 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $this->validate($request, [
+        /*$this->validate($request, [
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'phone' => 'required|phone:KE|min:10',
@@ -33,7 +35,7 @@ class AuthController extends Controller
             'village' => 'required|string',
             'password' => 'required|string|min:8|same:password_confirmation',
             'password_confirmation' => 'required|string|min:8',
-        ]);
+        ]);*/
 
 
 
@@ -42,8 +44,11 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->county = $request->county;
-        $user->town = $request->town;
-        $user->village = $request->village;
+        $user->role = $request->role;
+        $user-> longitude = $request->longitude;
+        $user-> latitude = $request->latitude;
+        $user-> location_name = $request->location_name;
+        $user-> address = $request->address;
         $user->password = bcrypt($request->password);
         $user->save();
 
