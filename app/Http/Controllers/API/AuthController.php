@@ -38,6 +38,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|same:password_confirmation',
             'password_confirmation' => 'required|string|min:8',
         ]);
+
         if($request->type == 'wholesaler' || $request->type == 'retailer'){
             $this->validate($request, [
                 'shop_name'=> 'required|string',
