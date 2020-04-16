@@ -29,7 +29,7 @@ class CreateProductsTable extends Migration
             $table->foreign('sub_category_id')->references('id')->on('sub_categories')
                 ->onDelete('cascade');
 
-            $table->foreign('category_id')->references('id')->on('product_category')
+            $table->foreign('category_id')->references('id')->on('product_categories')
                 ->onDelete('cascade');
 
             $table->foreign('brand_id')->references('id')->on('brands')
