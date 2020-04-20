@@ -33,7 +33,10 @@ Route::prefix('v1')->group(function () {
     Route::group(['prefix' => 'admin'], function () {
         //User
         Route::apiResources(['user' => 'API\UserController']);
-
+        Route::get('customer', 'API\UserController@customers');
+        Route::get('rider', 'API\UserController@rider');
+        Route::get('wholesaler', 'API\UserController@wholesaler');
+        Route::get('retailer', 'API\UserController@retailer');
         //shopLocal
         Route::group(['middleware' => 'auth.role:admin,stock-manager'], function () {
             Route::prefix('shopLocal')->group(function () {

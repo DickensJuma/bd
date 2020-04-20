@@ -18,7 +18,28 @@ class UserController extends Controller
     {
         return User::latest()->paginate(10);
     }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
 
+    public function customers()
+    {
+        return User::where('role','customer')->latest()->paginate(10);
+    }
+    public function rider()
+    {
+        return User::where('role','rider')->latest()->paginate(10);
+    }
+    public function wholesaler()
+    {
+        return User::where('role','wholesaler')->latest()->paginate(10);
+    }
+    public function retailer()
+    {
+        return User::where('role','retailer')->latest()->paginate(10);
+    }
     /**
      * Store a newly created resource in storage.
      *
