@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\ProductsCategory;
+use App\ProductCategory;
 use Illuminate\Http\Request;
 
 class ProductCategoryController extends Controller
@@ -15,7 +15,7 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        return ProductsCategory::latest()->get();
+        return ProductCategory::latest()->get();
     }
 
     /**
@@ -27,10 +27,10 @@ class ProductCategoryController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|unique:service_categories',
+            'name' => 'required|unique:product_categories',
             'image' => 'required|string'
         ]);
-        $category = new ProductsCategory();
+        $category = new ProductCategory();
         $category->name = $request->name;
 
         if ($request->image) {
@@ -40,7 +40,7 @@ class ProductCategoryController extends Controller
             if (in_array($ext, ['png', 'jpg', 'jpeg'])) {
                 $image = time() . '.' . explode('/', explode(':', substr($request->image, 0,
                         strpos($request->image, ';')))[1])[1];
-                \Image::make($request->image)->resize(250, 250)->save(public_path('img/products_category/') . $image);
+                \Image::make($request->image)->resize(500, 500)->save(public_path('img/products_category/') . $image);
             } else {
                 $image = 'profile.png';
             }
@@ -77,7 +77,7 @@ class ProductCategoryController extends Controller
             'name' => 'required|string',
         ]);
 
-        $category = ProductsCategory::findOrFail($id);
+        $category = ProductCategory::findOrFail($id);
         $category->name = $request->name;
         if ($request->hasEdit == 1) {
             $ext = explode('/', explode(':', substr($request->image, 0,
@@ -105,7 +105,7 @@ class ProductCategoryController extends Controller
      */
     public function destroy($id)
     {
-        $user = ProductsCategory::findOrFail($id);
+        $user = ProductCategory::findOrFail($id);
         $user->delete();
         return ['message'=> 'Category deleted'];
     }
