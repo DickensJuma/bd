@@ -15,7 +15,11 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        return ProductCategory::latest()->get();
+        return ProductCategory::orderBy('name')->get();
+    }
+
+    public function featuredCategory(){
+        return ProductCategory::get()->random(5);
     }
 
     /**

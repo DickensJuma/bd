@@ -9,7 +9,7 @@ class SubCategory extends Model
     protected $table = 'sub_categories';
     protected $guarded = [];
     public function category(){
-        return $this->belongsTo(ProductsCategory::class, 'product_category_id');
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
     public function brands(){

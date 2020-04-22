@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Product;
-use App\ProductsCategory;
+use App\ProductCategory;
 use App\SubCategory;
 use Illuminate\Http\Request;
 
@@ -17,7 +17,7 @@ class ShopController extends Controller
      */
     public function getCategories()
     {
-        return ProductsCategory::orderBy('name')->get(['id', 'name', 'image']);
+        return ProductCategory::orderBy('name')->get(['id', 'name', 'image']);
     }
 
     /**
@@ -40,6 +40,21 @@ class ShopController extends Controller
     public function getCategoryProducts($id)
     {
         return Product::orderBy('title')->where('category_id', $id)->with('brand')->with('files')->get();
+    }
+
+    public function searchCategories(Request $request){
+        $this->validate($request, [
+            'search' => 'required|string',
+        ]);
+
+        if($search = $request->search) {
+            return ProductCategory::orderBy('name')->where(function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%$search%");
+            })->get();
+
+        }else{
+            return ProductCategory::orderBy('name')->get();
+        }
     }
 
     public function searchProducts(Request $request){
