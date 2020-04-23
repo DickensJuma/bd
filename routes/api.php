@@ -33,6 +33,8 @@ Route::prefix('v1')->group(function () {
     Route::group(['prefix' => 'admin'], function () {
         //User
         Route::apiResources(['user' => 'API\UserController']);
+        Route::post('users/{id}', 'API\UserController@userUpdate');
+        Route::get('dashboard', 'API\UserController@dashboard');
         Route::get('customer', 'API\UserController@customers');
         Route::get('rider', 'API\UserController@rider');
         Route::get('wholesaler', 'API\UserController@wholesaler');
