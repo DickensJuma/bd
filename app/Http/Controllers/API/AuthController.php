@@ -13,26 +13,13 @@ use JWTAuth;
 
 class AuthController extends Controller
 {
-    /**
-     * @response {
-     *  "status": "success",
-     * }
-     * @bodyParam name string required The name of the user. Example: zenta
-     * @bodyParam email string required The email of the user. Example: zenta@gmail.com
-     * @bodyParam phone string required The phone number of the user. Must be a kenyan phone number. Example: 0715810055
-     * @bodyParam county string required The county of residence of the user. Example: Kisumu
-     * @bodyParam town string required The town of residence of the user. Example: Kombewa
-     * @bodyParam village string required The village of residence of the user. Example: Kitare
-     * @bodyParam password string required The password of the user. A minimum of 8 characters Example: 123456789
-     * @bodyParam password_confirmation string required The password of the user. A minimum of 8 characters. ust be equal to the password Example: 123456789
-     */
     public function register(Request $request)
     {
         $this->validate($request, [
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'phone' => 'required|phone:KE|min:10',
-            'type' => 'required|string',
+            'type' => 'required|string|in:customer,wholesaler,retailer,rider',
             'county' => 'required|string',
             'location_name'=>'required|string',
             'password' => 'required|string|min:8|same:password_confirmation',
@@ -89,19 +76,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    /**
-     * @response {
-     *  "status": "success",
-     * "data":{
-     *  "name": "Art Yangu",
-     *  "email": "zenta@gmail.com",
-     * "type": "artist"
-     * }
-     * }
-     *
-     * @bodyParam email string required The email of the user. Example: zenta@gmail.com
-     * @bodyParam password string required The password of the user. A minimum of 8 characters Example: 123456789
-     */
     public function login(Request $request)
     {
         $this->validate($request, [

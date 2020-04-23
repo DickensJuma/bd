@@ -21,13 +21,16 @@ Route::prefix('v1')->group(function () {
 
     Route::post('auth/register', 'API\AuthController@register');
     Route::post('auth/login', 'API\AuthController@login');
-    Route::get('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
+    Route::get('featured-category', 'API\ProductCategoryController@featuredCategory');
+    Route::get('categories', 'API\ShopController@getCategories');
+    Route::post('search-categories', 'API\ShopController@searchCategories');
+//    Route::get('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
 
 
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('auth/user', 'API\AuthController@user');
         Route::post('auth/logout', 'API\AuthController@logout');
-        Route::get('/email/resend', 'API\VerificationController@resend')->name('verification.resend');
+//        Route::get('/email/resend', 'API\VerificationController@resend')->name('verification.resend');
     });
 
     Route::group(['prefix' => 'admin'], function () {
@@ -40,7 +43,7 @@ Route::prefix('v1')->group(function () {
         Route::get('wholesaler', 'API\UserController@wholesaler');
         Route::get('retailer', 'API\UserController@retailer');
         //shopLocal
-        Route::group(['middleware' => 'auth.role:admin,stock-manager'], function () {
+        Route::group(['middleware' => ['auth.role:admin', 'jwt.auth']], function () {
             Route::prefix('shopLocal')->group(function () {
                 Route::apiResources(['category' => 'API\ProductCategoryController']);
                 Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
