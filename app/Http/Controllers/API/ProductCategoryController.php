@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\ProductCategory;
 use Illuminate\Http\Request;
+use Image;
 
 class ProductCategoryController extends Controller
 {

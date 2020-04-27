@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Product;
 use App\ProductImage;
+use App\User;
+use App\WholesalerRetailer;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -23,6 +25,11 @@ class ProductController extends Controller
         }))->with(array('subcategory'=>function($query){
             $query->select('id', 'name');
         }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status']);
+    }
+
+    public function shop(){
+        return $shop = WholesalerRetailer::latest()->get();
+
     }
 
     public function getProducts($id){
@@ -58,6 +65,7 @@ class ProductController extends Controller
         $product->category_id = $request->category;
         $product->sub_category_id = $request->subcategory;
         $product->brand_id = $request->brand;
+        $product->user_id = $request->wholesaler;
         $product->title = $request->title;
         $product->price = $request->price;
         $product->description = $request->description;
