@@ -60,4 +60,8 @@ class User extends Authenticatable implements JwtSubject
     {
         return [];
     }
+
+    public function shop(){
+        return $this->hasOne(WholesalerRetailer::class, 'user_id');
+    }
 }

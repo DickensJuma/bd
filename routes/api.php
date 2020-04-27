@@ -23,7 +23,10 @@ Route::prefix('v1')->group(function () {
     Route::post('auth/login', 'API\AuthController@login');
     Route::get('featured-category', 'API\ProductCategoryController@featuredCategory');
     Route::get('categories', 'API\ShopController@getCategories');
+    Route::get('shops', 'API\ShopsController@getShops');
     Route::post('search-categories', 'API\ShopController@searchCategories');
+    Route::post('search-shops', 'API\ShopsController@searchShops');
+    Route::post('sort-shops', 'API\ShopsController@sortShops');
 //    Route::get('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
 
 
