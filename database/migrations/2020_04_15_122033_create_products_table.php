@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('sub_category_id');
             $table->unsignedBigInteger('brand_id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedInteger('status')->default(1);
             $table->longText('description');
             $table->decimal('price', 12, 2);
@@ -33,6 +34,8 @@ class CreateProductsTable extends Migration
                 ->onDelete('cascade');
 
             $table->foreign('brand_id')->references('id')->on('brands')
+                ->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade');
         });
     }

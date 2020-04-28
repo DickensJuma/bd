@@ -54,6 +54,7 @@ Route::prefix('v1')->group(function () {
                 Route::apiResources(['brands' => 'API\BrandsController']);
                 Route::get('my-brands/{id}', 'API\BrandsController@getBrands');
                 Route::apiResources(['products' => 'API\ProductController']);
+                Route::get('shop', 'API\ProductController@shop');
                 Route::get('brand-products/{id}', 'API\ProductController@getProducts');
                 Route::get('order', 'API\OrdersController@showAll');
                 Route::get('show-details/{id}', 'API\OrdersController@showDetails');

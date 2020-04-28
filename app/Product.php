@@ -11,9 +11,11 @@ class Product extends Model
     }
 
     public function category(){
-        return $this->belongsTo(ProductsCategory::class, 'category_id');
+        return $this->belongsTo(ProductCategory::class, 'category_id');
     }
-
+    public function wholesaler(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function files(){
         return $this->hasMany(ProductImage::class, 'product_id');
     }
