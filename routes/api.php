@@ -37,16 +37,16 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::group(['prefix' => 'admin'], function () {
-        //User
-        Route::apiResources(['user' => 'API\UserController']);
-        Route::post('users/{id}', 'API\UserController@userUpdate');
-        Route::get('dashboard', 'API\UserController@dashboard');
-        Route::get('customer', 'API\UserController@customers');
-        Route::get('rider', 'API\UserController@rider');
-        Route::get('wholesaler', 'API\UserController@wholesaler');
-        Route::get('retailer', 'API\UserController@retailer');
         //shopLocal
         Route::group(['middleware' => ['auth.role:admin', 'jwt.auth']], function () {
+            //User
+            Route::apiResources(['user' => 'API\UserController']);
+            Route::post('users/{id}', 'API\UserController@userUpdate');
+            Route::get('dashboard', 'API\UserController@dashboard');
+            Route::get('customer', 'API\UserController@customers');
+            Route::get('rider', 'API\UserController@rider');
+            Route::get('wholesaler', 'API\UserController@wholesaler');
+            Route::get('retailer', 'API\UserController@retailer');
             Route::prefix('shopLocal')->group(function () {
                 Route::apiResources(['category' => 'API\ProductCategoryController']);
                 Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
@@ -65,7 +65,17 @@ Route::prefix('v1')->group(function () {
                 Route::delete('delete-image/{id}', 'API\ProductController@deleteImage');
                 Route::delete('delete-product/{id}', 'API\ProductController@destroy');
                 Route::post('update-product/{id}', 'API\ProductController@update');
-                });
             });
         });
     });
+    Route::group(['prefix' => 'customer'], function () {
+        //shopLocal
+        Route::group(['middleware' => ['auth.role:customer', 'jwt.auth']], function () {
+            Route::group(['prefix' => 'profile'], function () {
+                Route::put('account', 'API\CustomerProfileController@account');
+                Route::put('location', 'API\CustomerProfileController@location');
+                Route::put('password', 'API\CustomerProfileController@password');
+            });
+        });
+    });
+});
