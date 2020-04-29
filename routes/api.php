@@ -37,45 +37,49 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::group(['prefix' => 'admin'], function () {
+
         //shopLocal
         Route::group(['middleware' => ['auth.role:admin', 'jwt.auth']], function () {
-            //User
-            Route::apiResources(['user' => 'API\UserController']);
-            Route::post('users/{id}', 'API\UserController@userUpdate');
-            Route::get('dashboard', 'API\UserController@dashboard');
-            Route::get('customer', 'API\UserController@customers');
-            Route::get('rider', 'API\UserController@rider');
-            Route::get('wholesaler', 'API\UserController@wholesaler');
-            Route::get('retailer', 'API\UserController@retailer');
-            Route::prefix('shopLocal')->group(function () {
-                Route::apiResources(['category' => 'API\ProductCategoryController']);
-                Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
-                Route::get('sub-category/{id}', 'API\ProductSubCategoryController@getSubcategory');
-                Route::apiResources(['brands' => 'API\BrandsController']);
-                Route::get('my-brands/{id}', 'API\BrandsController@getBrands');
-                Route::apiResources(['products' => 'API\ProductController']);
-                Route::get('shop', 'API\ProductController@shop');
-                Route::get('brand-products/{id}', 'API\ProductController@getProducts');
-                Route::get('order', 'API\OrdersController@showAll');
-                Route::get('show-details/{id}', 'API\OrdersController@showDetails');
-                Route::patch('change-status/{id}', 'API\OrdersController@changeStatus');
-                Route::get('all-products', 'API\ProductController@index');
-                Route::apiResources(['coupon' => 'API\CouponsController']);
-                Route::get('details/{id}', 'API\ShopController@show');
-                Route::patch('update-status/{id}', 'API\ProductController@changeStatus');
-                Route::delete('delete-image/{id}', 'API\ProductController@deleteImage');
-                Route::delete('delete-product/{id}', 'API\ProductController@destroy');
-                Route::post('update-product/{id}', 'API\ProductController@update');
+            //shopLocal
+            Route::group(['middleware' => ['auth.role:admin', 'jwt.auth']], function () {
+                //User
+                Route::apiResources(['user' => 'API\UserController']);
+                Route::post('users/{id}', 'API\UserController@userUpdate');
+                Route::get('dashboard', 'API\UserController@dashboard');
+                Route::get('customer', 'API\UserController@customers');
+                Route::get('rider', 'API\UserController@rider');
+                Route::get('wholesaler', 'API\UserController@wholesaler');
+                Route::get('retailer', 'API\UserController@retailer');
+                Route::prefix('shopLocal')->group(function () {
+                    Route::apiResources(['category' => 'API\ProductCategoryController']);
+                    Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
+                    Route::get('sub-category/{id}', 'API\ProductSubCategoryController@getSubcategory');
+                    Route::apiResources(['brands' => 'API\BrandsController']);
+                    Route::get('my-brands/{id}', 'API\BrandsController@getBrands');
+                    Route::apiResources(['products' => 'API\ProductController']);
+                    Route::get('shop', 'API\ProductController@shop');
+                    Route::get('brand-products/{id}', 'API\ProductController@getProducts');
+                    Route::get('order', 'API\OrdersController@showAll');
+                    Route::get('show-details/{id}', 'API\OrdersController@showDetails');
+                    Route::patch('change-status/{id}', 'API\OrdersController@changeStatus');
+                    Route::get('all-products', 'API\ProductController@index');
+                    Route::apiResources(['coupon' => 'API\CouponsController']);
+                    Route::get('details/{id}', 'API\ShopController@show');
+                    Route::patch('update-status/{id}', 'API\ProductController@changeStatus');
+                    Route::delete('delete-image/{id}', 'API\ProductController@deleteImage');
+                    Route::delete('delete-product/{id}', 'API\ProductController@destroy');
+                    Route::post('update-product/{id}', 'API\ProductController@update');
+                });
             });
         });
-    });
-    Route::group(['prefix' => 'customer'], function () {
-        //shopLocal
-        Route::group(['middleware' => ['auth.role:customer', 'jwt.auth']], function () {
-            Route::group(['prefix' => 'profile'], function () {
-                Route::put('account', 'API\CustomerProfileController@account');
-                Route::put('location', 'API\CustomerProfileController@location');
-                Route::put('password', 'API\CustomerProfileController@password');
+        Route::group(['prefix' => 'customer'], function () {
+            //shopLocal
+            Route::group(['middleware' => ['auth.role:customer', 'jwt.auth']], function () {
+                Route::group(['prefix' => 'profile'], function () {
+                    Route::put('account', 'API\CustomerProfileController@account');
+                    Route::put('location', 'API\CustomerProfileController@location');
+                    Route::put('password', 'API\CustomerProfileController@password');
+                });
             });
         });
     });
