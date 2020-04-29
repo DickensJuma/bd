@@ -18,24 +18,26 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::latest()->with(array('category'=>function($query){
+        return Product::latest()->with(array('category' => function ($query) {
             $query->select('id', 'name');
-        }))->with(array('brand'=>function($query){
+        }))->with(array('brand' => function ($query) {
             $query->select('id', 'name');
-        }))->with(array('subcategory'=>function($query){
+        }))->with(array('subcategory' => function ($query) {
             $query->select('id', 'name');
         }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status']);
     }
 
-    public function shop(){
+    public function shop()
+    {
         return $shop = WholesalerRetailer::latest()->get();
 
     }
 
-    public function getProducts($id){
-        return Product::where('brand_id', $id)->with(array('category'=>function($query){
+    public function getProducts($id)
+    {
+        return Product::where('brand_id', $id)->with(array('category' => function ($query) {
             $query->select('id', 'name');
-        }))->with(array('brand'=>function($query){
+        }))->with(array('brand' => function ($query) {
             $query->select('id', 'name');
         }))->get(['id', 'title', 'price', 'category_id', 'brand_id']);
     }
@@ -43,7 +45,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -76,17 +78,23 @@ class ProductController extends Controller
             foreach ($request->file('files') as $uploadedFile) {
                 $ext = $uploadedFile->getClientOriginalExtension();
                 if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
-                    $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
+//                    $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
+                    $filename = time() . $uploadedFile->getClientOriginalName();
+                    $img = \Image::make($uploadedFile)->resize(255, 255, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->save(public_path('storage/uploads/') . $filename);
                     $image = new ProductImage();
-                    $image->product_id = $product->id;
-                    $image->path = substr($filename,'7');
+                    $image->product_id = $product['id'];
+                    $image->height = $img->height();
+                    $image->path = $filename;
                     $image->save();
                 }
             }
         }
     }
 
-    public function changeStatus(Request $request, $id){
+    public function changeStatus(Request $request, $id)
+    {
         $product = Product::where('uniqueId', $id)->firstOrFail();
         $product->status = $request->status;
         $product->update();
@@ -99,7 +107,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -110,8 +118,8 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -141,10 +149,15 @@ class ProductController extends Controller
             foreach ($request->file('files') as $uploadedFile) {
                 $ext = $uploadedFile->getClientOriginalExtension();
                 if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
-                    $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
+//                    $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
+                    $filename = time() . $uploadedFile->getClientOriginalName();
+                    \Image::make($uploadedFile)->resize(360, 360, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->save(public_path('uploads/') . $filename);
                     $image = new ProductImage();
                     $image->product_id = $product['id'];
-                    $image->path = substr($filename,'7');
+                    $image->height = \Image::make($uploadedFile)->height();
+                    $image->path = $filename;
                     $image->save();
                 }
             }
@@ -158,7 +171,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -171,7 +184,8 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function deleteImage($id){
+    public function deleteImage($id)
+    {
         $image = ProductImage::findOrFail($id);
         $image->delete();
 

@@ -16,6 +16,6 @@ class ProductImage extends Model
 
     public function getFilePathAttribute()
     {
-        return url(asset('/storage/' . $this->path));
+        return url(asset('/storage/uploads/' . $this->path));
     }
 }

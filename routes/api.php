@@ -28,6 +28,15 @@ Route::prefix('v1')->group(function () {
     Route::post('search-shops', 'API\ShopsController@searchShops');
     Route::post('sort-shops', 'API\ShopsController@sortShops');
 //    Route::get('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
+    Route::prefix('shopLocal')->group(function () {
+        Route::get('categories', 'API\ShopController@getCategories');
+        Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
+        Route::get('sub-categories/{id}', 'API\ShopController@getSubCategories');
+        Route::get('details/{id}', 'API\ShopController@show');
+        Route::post('apply-coupon', 'API\CouponsController@applyCoupon');
+        Route::post('search-products', 'API\ShopController@searchProducts');
+    });
+
 
 
     Route::group(['middleware' => 'jwt.auth'], function () {
@@ -72,14 +81,14 @@ Route::prefix('v1')->group(function () {
                 });
             });
         });
-        Route::group(['prefix' => 'customer'], function () {
-            //shopLocal
-            Route::group(['middleware' => ['auth.role:customer', 'jwt.auth']], function () {
-                Route::group(['prefix' => 'profile'], function () {
-                    Route::put('account', 'API\CustomerProfileController@account');
-                    Route::put('location', 'API\CustomerProfileController@location');
-                    Route::put('password', 'API\CustomerProfileController@password');
-                });
+    });
+    Route::group(['prefix' => 'customer'], function () {
+        //shopLocal
+        Route::group(['middleware' => ['auth.role:customer', 'jwt.auth']], function () {
+            Route::group(['prefix' => 'profile'], function () {
+                Route::put('account', 'API\CustomerProfileController@account');
+                Route::put('location', 'API\CustomerProfileController@location');
+                Route::put('password', 'API\CustomerProfileController@password');
             });
         });
     });
