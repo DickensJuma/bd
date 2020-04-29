@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddProfileImageToWholesalerRetailersTable extends Migration
+class AddHeightToProductImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddProfileImageToWholesalerRetailersTable extends Migration
      */
     public function up()
     {
-        Schema::table('wholesaler_retailers', function (Blueprint $table) {
-            $table->string('profile_image')->nullable()->after('shop_name');
+        Schema::table('product_images', function (Blueprint $table) {
+            $table->decimal('height', 8, 2)->nullable()->after('id');
         });
     }
 
@@ -25,7 +25,7 @@ class AddProfileImageToWholesalerRetailersTable extends Migration
      */
     public function down()
     {
-        Schema::table('wholesaler_retailers', function (Blueprint $table) {
+        Schema::table('product_images', function (Blueprint $table) {
             //
         });
     }
