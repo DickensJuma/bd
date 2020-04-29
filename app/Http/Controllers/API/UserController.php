@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\WholesalerRetailer;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
@@ -73,17 +74,40 @@ class UserController extends Controller
             'role' => 'required|string|max:191',
             'phone' => 'required|string|max:191',
 
+        ]);
+        $user = new User();
+        $user->name = $request->name;
+        $user->email =$request->email;
+        $user-> phone = $request->phone;
+        $user-> role = $request->role;
+        $user->county = $request->county;
+        $user->location_name =$request->town;
+        $user->password = Hash::make($request->password);
+        $user->save();
 
-        ]);
-        return User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'phone' => $request['phone'],
-            'role' => $request['role'],
-            'county' => $request['county'],
-            'location_name' => $request['town'],
-            'password' => Hash::make($request['password']),
-        ]);
+
+        if($request-> role == 'wholesaler' || $request-> role == 'retailer'){
+            $this->validate($request, [
+                'shop'=>'required|string|max:191 ',
+                'files' => 'required|array|between:1,15',
+            ]);
+
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $uploadedFile) {
+                    $ext = $uploadedFile->getClientOriginalExtension();
+                    if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
+                        $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
+                        $shop = new WholesalerRetailer();
+                        $shop->shop_name = $request->shop;
+                        $shop->user_id = $user->id;
+                        $shop->profile_image = substr($filename,'7');
+                        $shop->save();
+                    }
+                }
+            }
+
+        }
+
     }
 
     /**
