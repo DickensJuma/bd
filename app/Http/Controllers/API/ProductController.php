@@ -51,6 +51,7 @@ class ProductController extends Controller
         $this->validate($request, [
             'category' => 'required|integer',
             'subcategory' => 'required|integer',
+            'shop' => 'required|integer',
             'brand' => 'required|integer',
             'title' => 'required|string',
             'price' => 'required|min:1|regex:/^\d+(\.\d{1,2})?$/',
@@ -65,7 +66,7 @@ class ProductController extends Controller
         $product->category_id = $request->category;
         $product->sub_category_id = $request->subcategory;
         $product->brand_id = $request->brand;
-        $product->user_id = $request->wholesaler;
+        $product->user_id = $request->shop;
         $product->title = $request->title;
         $product->price = $request->price;
         $product->description = $request->description;
