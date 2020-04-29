@@ -19,7 +19,7 @@ class BrandsController extends Controller
     }
 
     public function getBrands($id){
-        return Brand::orderBy('name')->where('sub_category_id', $id)->with('subcategory.category')->get();
+        return Brand::orderBy('name')->where('sub_category_id', $id)->with('subcategory.category')->with('product')->get();
     }
 
     /**
