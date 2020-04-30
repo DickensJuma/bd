@@ -80,7 +80,13 @@ class ShopController extends Controller
      */
     public function show($id)
     {
-        return Product::where('uniqueId', $id)->with('files')->firstOrFail();
+        return Product::where('uniqueId', $id)->with('files')->with(array('brand' => function ($query) {
+            $query->select('id', 'name');
+        }))->with(array('subcategory' => function ($query) {
+            $query->select('id', 'name');
+        }))->with(array('category' => function ($query) {
+            $query->select('id', 'name');
+        }))->firstOrFail();
     }
 
     /**
