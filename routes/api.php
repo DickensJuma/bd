@@ -21,6 +21,9 @@ Route::prefix('v1')->group(function () {
 
     Route::post('auth/register', 'API\AuthController@register');
     Route::post('auth/login', 'API\AuthController@login');
+    Route::post('auth/emailCheck', 'API\UserController@checkEmail');
+    Route::post('password/email', 'API\ForgotPasswordController@sendResetLinkEmail');
+    Route::post('password/reset', 'API\ResetPasswordController@reset');
     Route::get('featured-category', 'API\ProductCategoryController@featuredCategory');
     Route::get('categories', 'API\ShopController@getCategories');
     Route::get('shops', 'API\ShopsController@getShops');

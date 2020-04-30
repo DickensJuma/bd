@@ -8,6 +8,7 @@ use App\User;
 use App\WholesalerRetailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 use JWTAuth;
 
 
