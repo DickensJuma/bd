@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\order;
 use App\orderItem;
 use Illuminate\Http\Request;
+use Auth;
 
 class OrdersController extends Controller
 {
@@ -78,7 +79,6 @@ class OrdersController extends Controller
         }
 
         // Pay
-
         $phoneNo = '254' . substr($request->phone, -9);
         $trans_id = $order->orderNo; // unique id
         $customer_id = $order->customer_id; // user id

@@ -40,6 +40,11 @@ Route::prefix('v1')->group(function () {
 
         Route::group(['middleware' => 'jwt.auth'], function () {
             Route::post('apply-coupon', 'API\CouponsController@applyCoupon');
+            Route::post('order', 'API\OrdersController@store');
+            Route::get('order', 'API\OrdersController@show');
+            Route::get('show-details/{id}', 'API\OrdersController@showDetails');
+            Route::patch('cancel-order/{id}', 'API\OrdersController@cancelOrder');
+            Route::post('pay/{id}', 'API\OrdersController@makePayment');
         });
     });
 

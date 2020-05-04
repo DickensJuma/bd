@@ -12,6 +12,8 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        'mpesa-callback/*',
+        'account-balance',
+        'callback-c2b/*',
     ];
 }
