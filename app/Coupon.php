@@ -11,19 +11,19 @@ class Coupon extends Model
         return self::where('code', $code)->where('status', 'active')->first();
     }
 
-    public function discount($total)
+    public function discount($total, $id)
     {
-        if ($total > $this->goods_worth) {
-            if ($this->type == 'fixed') {
-                return $this->value;
-            } elseif ($this->type == 'percent') {
-                $final = ($this->percent_off / 100) * $total;
-
+        $coupon = self::where('id', $id)->where('status', 'active')->firstOrFail();
+        if ($total > $coupon['goods_worth']) {
+            if ($coupon['type'] == 'fixed') {
+                return $coupon['value'];
+            } elseif ($coupon['type'] == 'percent') {
+                $final = ($coupon['percent_off'] / 100) * $total;
                 return $final;
             } else {
                 return 0;
             }
-        }else{
+        } else {
             return 0;
         }
     }

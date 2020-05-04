@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Validator;
+use Illuminate\Validation\ValidationException;
 
 class CouponsController extends Controller
 {
@@ -29,14 +30,14 @@ class CouponsController extends Controller
         $coupon = Coupon::where('code', $request->coupon)->where('status', 'active')->first();
 
         if (!$coupon) {
-            return response()->json(['errors' => 'Coupon invalid or expired... Please try again'], 422);
+            throw ValidationException::withMessages(['coupon' => 'Coupon invalid or expired... Please try again']);
         }
 
         if ($coupon) {
             $parent = array(
                 'unique_id' => $coupon['unique_id'],
                 'code' => $coupon['code'],
-                'discount' => $coupon->discount($request->total)
+                'discount' => $coupon->discount($request->total, $coupon['id'])
             );
 
             return response([
@@ -63,7 +64,7 @@ class CouponsController extends Controller
 
         $coupon = new Coupon();
 
-        if ($request->type == "fixed"){
+        if ($request->type == "fixed") {
             $this->validate($request, [
                 'discount_amount' => 'required|integer'
             ]);
@@ -72,7 +73,7 @@ class CouponsController extends Controller
             $coupon->type = $request->type;
         }
 
-        if ($request->type == "percent"){
+        if ($request->type == "percent") {
             $this->validate($request, [
                 'percent_off' => 'required|integer|between:1,100'
             ]);
@@ -123,7 +124,7 @@ class CouponsController extends Controller
         ]);
         $coupon = Coupon::findOrFail($id);
 
-        if ($request->type == "fixed"){
+        if ($request->type == "fixed") {
             $this->validate($request, [
                 'discount_amount' => 'required|integer'
             ]);
@@ -132,7 +133,7 @@ class CouponsController extends Controller
             $coupon->type = $request->type;
         }
 
-        if ($request->type == "percent"){
+        if ($request->type == "percent") {
             $this->validate($request, [
                 'percent_off' => 'required|integer|between:1,100'
             ]);
