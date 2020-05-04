@@ -64,4 +64,9 @@ class User extends Authenticatable implements JwtSubject
     public function shop(){
         return $this->hasOne(WholesalerRetailer::class, 'user_id');
     }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\MailResetPasswordNotification($token));
+    }
 }
