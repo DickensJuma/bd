@@ -30,7 +30,7 @@ Route::prefix('v1')->group(function () {
     Route::post('search-categories', 'API\ShopController@searchCategories');
     Route::post('search-shops', 'API\ShopsController@searchShops');
     Route::post('sort-shops', 'API\ShopsController@sortShops');
-//    Route::get('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
+  Route::post('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
     Route::prefix('shopLocal')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
@@ -45,7 +45,7 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('auth/user', 'API\AuthController@user');
         Route::post('auth/logout', 'API\AuthController@logout');
-//        Route::get('/email/resend', 'API\VerificationController@resend')->name('verification.resend');
+       Route::get('/email/resend', 'API\VerificationController@resend')->name('verification.resend');
     });
 
     Route::group(['prefix' => 'admin'], function () {

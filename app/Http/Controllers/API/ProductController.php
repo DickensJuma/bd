@@ -156,10 +156,10 @@ class ProductController extends Controller
                     $filename = time() . $uploadedFile->getClientOriginalName();
                     \Image::make($uploadedFile)->resize(360, 360, function ($constraint) {
                         $constraint->aspectRatio();
-                    })->save(public_path('uploads/') . $filename);
+                    })->save(public_path('storage/uploads/') . $filename);
                     \Image::make($uploadedFile)->resize(500, 500, function ($constraint) {
                         $constraint->aspectRatio();
-                    })->save(public_path('uploads/large/') . $filename);
+                    })->save(public_path('storage/uploads/large/') . $filename);
                     $image = new ProductImage();
                     $image->product_id = $product['id'];
                     $image->height = \Image::make($uploadedFile)->height();
