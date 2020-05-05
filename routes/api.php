@@ -30,7 +30,7 @@ Route::prefix('v1')->group(function () {
     Route::post('search-categories', 'API\ShopController@searchCategories');
     Route::post('search-shops', 'API\ShopsController@searchShops');
     Route::post('sort-shops', 'API\ShopsController@sortShops');
-//    Route::get('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
+  Route::post('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
     Route::prefix('shopLocal')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
@@ -53,7 +53,7 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('auth/user', 'API\AuthController@user');
         Route::post('auth/logout', 'API\AuthController@logout');
-//        Route::get('/email/resend', 'API\VerificationController@resend')->name('verification.resend');
+       Route::get('/email/resend', 'API\VerificationController@resend')->name('verification.resend');
     });
 
     Route::group(['prefix' => 'admin'], function () {
@@ -90,6 +90,26 @@ Route::prefix('v1')->group(function () {
                     Route::delete('delete-product/{id}', 'API\ProductController@destroy');
                     Route::post('update-product/{id}', 'API\ProductController@update');
                 });
+            });
+        });
+    });
+    // wholesaler || retailer
+    Route::group(['prefix' => 'retailer'], function () {
+        //shopLocal
+        Route::group(['middleware' => ['auth.role:retailer', 'jwt.auth']], function () {
+            Route::group(['prefix' => 'dashboard'], function () {
+                Route::post('products', 'API\ProductController@myproducts');
+                Route::apiResources(['category' => 'API\ProductCategoryController']);
+                Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
+                Route::get('sub-category/{id}', 'API\ProductSubCategoryController@getSubcategory');
+                Route::get('my-brands/{id}', 'API\BrandsController@getBrands');
+                Route::apiResources(['brands' => 'API\BrandsController']);
+                Route::get('all-products', 'API\ProductController@suplier');
+                Route::delete('delete-product/{id}', 'API\ProductController@destroy');
+                Route::delete('delete-image/{id}', 'API\ProductController@deleteImage');
+                Route::post('update-product/{id}', 'API\ProductController@update');
+                Route::patch('update-status/{id}', 'API\ProductController@changeStatus');
+                Route::get('details/{id}', 'API\ShopController@show');
             });
         });
     });

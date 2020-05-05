@@ -133,13 +133,13 @@ class UserController extends Controller
             'phone' => 'required|string|max:191',
             'county' => 'required|string|max:191',
             'role' => 'required|string|max:191',
-        ]);
+        ]); 
 
-        if($request-> password){
-            $this->validate($request, [
-                'password'=>'required | string | min 6'
-            ]);
-            $user->password = bcrypt($request->password);
+        if($request->password){
+                $this->validate($request, [
+                    'password' => 'required|string|min:8',
+                ]);
+                $user->password = bcrypt($request->password);
         }
         $user->name = $request->name;
         $user->email = $request->email;
@@ -164,13 +164,27 @@ class UserController extends Controller
             'name' => 'required|string|max:191',
             'password' => 'sometimes|required|min:6',
             'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
-            'town' => 'required|string|max:191',
+            'location_name' => 'required|string|max:191',
             'role' => 'required|string|max:191',
             'phone' => 'required|string|max:191',
-            'village' => 'required|string|max:191',
         ]);
+        if($request-> password){
+            $this->validate($request, [
+                'password'=>'required|string|min:6'
+            ]);
+            $user->password = bcrypt($request->password);
+        }
 
-        $user->update($request->all());
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->county = $request->county;
+        $user->role = $request->role;
+        $user-> longitude = $request->longitude;
+        $user-> latitude = $request->latitude;
+        $user-> location_name = $request->location_name;
+        $user-> address = $request->address;
+        $user->update();
         return response(['status' => 'success'], 200);
     }
 
