@@ -88,6 +88,26 @@ Route::prefix('v1')->group(function () {
             });
         });
     });
+    // wholesaler || retailer
+    Route::group(['prefix' => 'retailer'], function () {
+        //shopLocal
+        Route::group(['middleware' => ['auth.role:retailer', 'jwt.auth']], function () {
+            Route::group(['prefix' => 'dashboard'], function () {
+                Route::post('products', 'API\ProductController@myproducts');
+                Route::apiResources(['category' => 'API\ProductCategoryController']);
+                Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
+                Route::get('sub-category/{id}', 'API\ProductSubCategoryController@getSubcategory');
+                Route::get('my-brands/{id}', 'API\BrandsController@getBrands');
+                Route::apiResources(['brands' => 'API\BrandsController']);
+                Route::get('all-products', 'API\ProductController@suplier');
+                Route::delete('delete-product/{id}', 'API\ProductController@destroy');
+                Route::delete('delete-image/{id}', 'API\ProductController@deleteImage');
+                Route::post('update-product/{id}', 'API\ProductController@update');
+                Route::patch('update-status/{id}', 'API\ProductController@changeStatus');
+                Route::get('details/{id}', 'API\ShopController@show');
+            });
+        });
+    });
     Route::group(['prefix' => 'customer'], function () {
         //shopLocal
         Route::group(['middleware' => ['auth.role:customer', 'jwt.auth']], function () {

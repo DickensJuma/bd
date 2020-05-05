@@ -26,6 +26,17 @@ class ProductController extends Controller
             $query->select('id', 'name');
         }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status']);
     }
+    public function suplier()
+    {
+        $user_id = auth()->user()->id;
+        return Product::where('user_id',$user_id)->latest()->with(array('category' => function ($query) {
+            $query->select('id', 'name');
+        }))->with(array('brand' => function ($query) {
+            $query->select('id', 'name');
+        }))->with(array('subcategory' => function ($query) {
+            $query->select('id', 'name');
+        }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status']);
+    }
 
     public function shop()
     {
@@ -96,6 +107,53 @@ class ProductController extends Controller
         }
     }
 
+
+    public function myproducts(Request $request)
+    {
+        $this->validate($request, [
+            'category' => 'required|integer',
+            'subcategory' => 'required|integer',
+            'brand' => 'required|integer',
+            'title' => 'required|string',
+            'price' => 'required|min:1|regex:/^\d+(\.\d{1,2})?$/',
+            'files' => 'required|array|between:1,15',
+            'files.*' => 'image|mimes:jpg,jpeg,png',
+            'description' => 'required',
+        ]);
+
+        $product = new Product();
+        $product->quantity = $request->quantity;
+        $product->uniqueId = time();
+        $product->category_id = $request->category;
+        $product->sub_category_id = $request->subcategory;
+        $product->brand_id = $request->brand;
+        $product->user_id = auth()->user()->id;
+        $product->title = $request->title;
+        $product->price = $request->price;
+        $product->description = $request->description;
+        $product->save();
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $uploadedFile) {
+                $ext = $uploadedFile->getClientOriginalExtension();
+                if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
+//                    $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
+                    $filename = time() . $uploadedFile->getClientOriginalName();
+                    $img = \Image::make($uploadedFile)->resize(255, 255, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->save(public_path('storage/uploads/') . $filename);
+                    \Image::make($uploadedFile)->resize(500, 500, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->save(public_path('/storage/uploads/large/') . $filename);
+                    $image = new ProductImage();
+                    $image->product_id = $product['id'];
+                    $image->height = $img->height();
+                    $image->path = $filename;
+                    $image->save();
+                }
+            }
+        }
+    }
     public function changeStatus(Request $request, $id)
     {
         $product = Product::where('uniqueId', $id)->firstOrFail();
