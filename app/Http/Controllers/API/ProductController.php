@@ -80,10 +80,10 @@ class ProductController extends Controller
                 if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
 //                    $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
                     $filename = time() . $uploadedFile->getClientOriginalName();
-                    $img = \Image::make($uploadedFile)->resize(255, 255, function ($constraint) {
+                    $img = \Image::make($uploadedFile)->resize(360, 360, function ($constraint) {
                         $constraint->aspectRatio();
                     })->save(public_path('storage/uploads/') . $filename);
-                    \Image::make($uploadedFile)->resize(500, 500, function ($constraint) {
+                    \Image::make($uploadedFile)->resize(600, 600, function ($constraint) {
                         $constraint->aspectRatio();
                     })->save(public_path('/storage/uploads/large/') . $filename);
                     $image = new ProductImage();
@@ -157,7 +157,7 @@ class ProductController extends Controller
                     \Image::make($uploadedFile)->resize(360, 360, function ($constraint) {
                         $constraint->aspectRatio();
                     })->save(public_path('uploads/') . $filename);
-                    \Image::make($uploadedFile)->resize(500, 500, function ($constraint) {
+                    \Image::make($uploadedFile)->resize(600, 600, function ($constraint) {
                         $constraint->aspectRatio();
                     })->save(public_path('uploads/large/') . $filename);
                     $image = new ProductImage();
