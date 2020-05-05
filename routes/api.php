@@ -36,8 +36,11 @@ Route::prefix('v1')->group(function () {
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
         Route::get('sub-categories/{id}', 'API\ShopController@getSubCategories');
         Route::get('details/{id}', 'API\ShopController@show');
-        Route::post('apply-coupon', 'API\CouponsController@applyCoupon');
         Route::post('search-products', 'API\ShopController@searchProducts');
+
+        Route::group(['middleware' => 'jwt.auth'], function () {
+            Route::post('apply-coupon', 'API\CouponsController@applyCoupon');
+        });
     });
 
 
