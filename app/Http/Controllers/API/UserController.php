@@ -185,6 +185,27 @@ class UserController extends Controller
         $user-> location_name = $request->location_name;
         $user-> address = $request->address;
         $user->update();
+
+        if($request-> role == 'wholesaler' || $request-> role == 'retailer'){
+            $this->validate($request, [
+                'shop_name'=>'required',
+            ]);
+        
+        $shop = WholesalerRetailer::where('user_id',$user->id)->firstOrFail();
+        $shop->shop_name = $request->shop['shop_name'];
+
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $uploadedFile) {
+                    $ext = $uploadedFile->getClientOriginalExtension();
+                    if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
+                        $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
+                        $shop->profile_image = substr($filename,'7');
+                        
+                    }
+                }
+            }
+            $shop->update();
+        }
         return response(['status' => 'success'], 200);
     }
 
