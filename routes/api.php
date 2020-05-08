@@ -111,7 +111,7 @@ Route::prefix('v1')->group(function () {
                 Route::patch('update-status/{id}', 'API\ProductController@changeStatus');
                 Route::get('details/{id}', 'API\ShopController@show');
                 Route::get('shop-details/{id}', 'API\ShopController@shopDetail');
-                Route::put('user/{id}', 'API\UserController@update');
+                Route::post('user/{id}', 'API\UserController@update');
             });
         });
     });

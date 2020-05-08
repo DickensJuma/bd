@@ -192,18 +192,21 @@ class UserController extends Controller
             ]);
         
         $shop = WholesalerRetailer::where('user_id',$user->id)->firstOrFail();
-        $shop->shop_name = $request->shop['shop_name'];
+        $shop->shop_name = $request->shop_name;
+            
+        if ($request->Imagefile) {
+            
+            $file = $request->Imagefile;
+            $ext = explode('/', explode(':', substr($file, 0,
+                strpos($file, ';')))[1])[1];
 
-            if ($request->hasFile('files')) {
-                foreach ($request->file('files') as $uploadedFile) {
-                    $ext = $uploadedFile->getClientOriginalExtension();
-                    if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
-                        $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
-                        $shop->profile_image = substr($filename,'7');
-                        
-                    }
-                }
+            if (in_array($ext, ['png', 'jpg', 'jpeg'])) {
+                $image = time() . '.' . explode('/', explode(':', substr($file, 0,
+                        strpos($file, ';')))[1])[1];
+                \Image::make($file)->resize(500, 500)->save(public_path('/storage/uploads/') . $image);
+                $shop->profile_image = $image;
             }
+        }
             $shop->update();
         }
         return response(['status' => 'success'], 200);
