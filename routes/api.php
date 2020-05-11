@@ -19,6 +19,7 @@ Route::prefix('v1')->group(function () {
         Route::get('auth/refresh', 'API\AuthController@refresh');
     });
 
+    Route::get('subcat_brands/{id}', 'API\ProductController@get_subcategory_brands');
     Route::post('auth/register', 'API\AuthController@register');
     Route::post('auth/login', 'API\AuthController@login');
     Route::post('auth/emailCheck', 'API\UserController@checkEmail');
@@ -30,13 +31,14 @@ Route::prefix('v1')->group(function () {
     Route::post('search-categories', 'API\ShopController@searchCategories');
     Route::post('search-shops', 'API\ShopsController@searchShops');
     Route::post('sort-shops', 'API\ShopsController@sortShops');
-  Route::post('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
+    Route::post('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
     Route::prefix('shopLocal')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
         Route::get('sub-categories/{id}', 'API\ShopController@getSubCategories');
         Route::get('details/{id}', 'API\ShopController@show');
         Route::post('search-products', 'API\ShopController@searchProducts');
+        Route::post('filter-products', 'API\ProductController@filterProducts');
 
         Route::group(['middleware' => 'jwt.auth'], function () {
             Route::post('apply-coupon', 'API\CouponsController@applyCoupon');
