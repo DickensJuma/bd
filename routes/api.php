@@ -98,7 +98,7 @@ Route::prefix('v1')->group(function () {
     // wholesaler || retailer
     Route::group(['prefix' => 'retailer'], function () {
         //shopLocal
-        Route::group(['middleware' => ['auth.role:retailer', 'jwt.auth']], function () {
+        Route::group(['middleware' => ['auth.role:retailer,wholesaler','jwt.auth']], function () {
             Route::group(['prefix' => 'dashboard'], function () {
                 Route::post('products', 'API\ProductController@myproducts');
                 Route::apiResources(['category' => 'API\ProductCategoryController']);
@@ -112,6 +112,8 @@ Route::prefix('v1')->group(function () {
                 Route::post('update-product/{id}', 'API\ProductController@update');
                 Route::patch('update-status/{id}', 'API\ProductController@changeStatus');
                 Route::get('details/{id}', 'API\ShopController@show');
+                Route::get('shop-details/{id}', 'API\ShopController@shopDetail');
+                Route::post('user/{id}', 'API\UserController@update');
             });
         });
     });

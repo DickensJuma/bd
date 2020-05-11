@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Product;
+use App\User;
 use App\ProductCategory;
 use App\SubCategory;
 use Illuminate\Http\Request;
@@ -89,6 +90,9 @@ class ShopController extends Controller
         }))->firstOrFail();
     }
 
+    public function shopDetail($id){
+        return User::where('id',$id)->with('shop')->get();
+    }
     /**
      * Remove the specified resource from storage.
      *
