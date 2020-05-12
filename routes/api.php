@@ -122,6 +122,20 @@ Route::prefix('v1')->group(function () {
             });
         });
     });
+
+    // rider
+    Route::group(['prefix' => 'rider'], function () {
+        //shopLocal
+        Route::group(['middleware' => ['auth.role:rider','jwt.auth']], function () {
+            Route::group(['prefix' => 'dashboard'], function () {
+                Route::get('rider-details/{id}', 'API\RiderController@riderDetail');
+                Route::post('user/{id}', 'API\UserController@update');
+            });
+        });
+    });
+
+
+
     Route::group(['prefix' => 'customer'], function () {
         //shopLocal
         Route::group(['middleware' => ['auth.role:customer', 'jwt.auth']], function () {
