@@ -272,4 +272,8 @@ class ProductController extends Controller
     public function filterProducts(Request $request){
         return Product::filter($request->all())->with('brand')->with('files')->get();
     }
+
+    public function featuredProducts(){
+        return Product::orderBy('title')->where('status', 1)->with('brand')->with('files')->with('category')->get()->random(6);
+    }
 }

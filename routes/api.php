@@ -26,6 +26,7 @@ Route::prefix('v1')->group(function () {
     Route::post('password/email', 'API\ForgotPasswordController@sendResetLinkEmail');
     Route::post('password/reset', 'API\ResetPasswordController@reset');
     Route::get('featured-category', 'API\ProductCategoryController@featuredCategory');
+    Route::get('featured-products', 'API\ProductController@featuredProducts');
     Route::get('categories', 'API\ShopController@getCategories');
     Route::get('shops', 'API\ShopsController@getShops');
     Route::post('search-categories', 'API\ShopController@searchCategories');
