@@ -10,6 +10,6 @@ class WholesalerRetailer extends Model
 
     public function getFilePathAttribute()
     {
-        return asset('img/profiles/' . $this->profile_image);
+        return asset('/storage/uploads/' . $this->profile_image);
     }
 }

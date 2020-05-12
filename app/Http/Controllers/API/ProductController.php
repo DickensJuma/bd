@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Brand;
 use App\Http\Controllers\Controller;
 use App\Product;
+use App\ProductCategory;
 use App\ProductImage;
+use App\SubCategory;
 use App\User;
 use App\WholesalerRetailer;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductController extends Controller
 {
@@ -257,5 +261,15 @@ class ProductController extends Controller
         return response([
             'status' => 'success'
         ], 200);
+    }
+
+    public function get_subcategory_brands($id){
+        return Brand::whereHas('subcategory', function ($query) use ($id){
+            $query->where('product_category_id', $id);
+        })->get();
+    }
+
+    public function filterProducts(Request $request){
+        return Product::filter($request->all())->with('brand')->with('files')->get();
     }
 }
