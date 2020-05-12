@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Rider;
+use App\User;
 use Illuminate\Http\Request;
 
 class RiderController extends Controller
@@ -37,6 +39,10 @@ class RiderController extends Controller
     public function show($id)
     {
         //
+    }
+    
+    public function riderDetail($id){
+        return User::where('id',$id)->with('ride')->get();
     }
 
     /**
