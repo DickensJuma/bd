@@ -89,22 +89,12 @@ class UserController extends Controller
         if($request-> role == 'wholesaler' || $request-> role == 'retailer'){
             $this->validate($request, [
                 'shop'=>'required|string|max:191 ',
-                'files' => 'required|array|between:1,15',
             ]);
 
-            if ($request->hasFile('files')) {
-                foreach ($request->file('files') as $uploadedFile) {
-                    $ext = $uploadedFile->getClientOriginalExtension();
-                    if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
-                        $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
-                        $shop = new WholesalerRetailer();
-                        $shop->shop_name = $request->shop;
-                        $shop->user_id = $user->id;
-                        $shop->profile_image = substr($filename,'7');
-                        $shop->save();
-                    }
-                }
-            }
+            $shop = new WholesalerRetailer();
+            $shop->shop_name = $request->shop;
+            $shop->user_id = $user->id;
+            $shop->save();
 
         }
 
