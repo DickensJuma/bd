@@ -7,6 +7,7 @@ use App\Helpers\Payment\Mpesa;
 use App\Http\Controllers\Controller;
 use App\order;
 use App\orderItem;
+use App\Product;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -31,7 +32,31 @@ class OrdersController extends Controller
     {
         //
     }
+    public function MyOrders()
+    {
 
+        $orders = orderItem::latest()->with(array("product" => function($q) {
+                $q->where('user_id',auth()->user()->id);
+        }))->get();
+
+        return $orders;
+    }
+
+    public function orderDetail($id)
+    {
+        $productId = orderItem::where('id',$id)->value('product_id');
+        return Product::where('id',$productId)->with(array('category' => function ($query) {
+            $query->select('id', 'name');
+        }))->with(array('brand' => function ($query) {
+            $query->select('id', 'name');
+        }))->with(array('subcategory' => function ($query) {
+            $query->select('id', 'name');
+        }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status']);
+    }
+    public function showOrderDetails($id){
+        $order_id = orderItem::where('id',$id)->value('order_id');
+       return order::where('id',$order_id)->get();
+    }
     /**
      * Store a newly created resource in storage.
      *

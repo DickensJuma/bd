@@ -92,6 +92,8 @@ Route::prefix('v1')->group(function () {
                     Route::delete('delete-image/{id}', 'API\ProductController@deleteImage');
                     Route::delete('delete-product/{id}', 'API\ProductController@destroy');
                     Route::post('update-product/{id}', 'API\ProductController@update');
+                    Route::post('delivery/{id}','API\DeliveryController@store');
+                    Route::get('myRider/{id}','API\DeliveryController@rider');
                 });
             });
         });
@@ -115,6 +117,9 @@ Route::prefix('v1')->group(function () {
                 Route::get('details/{id}', 'API\ShopController@show');
                 Route::get('shop-details/{id}', 'API\ShopController@shopDetail');
                 Route::post('user/{id}', 'API\UserController@update');
+                Route::get('myOrders', 'API\OrdersController@MyOrders');
+                Route::get('order-details/{id}', 'API\OrdersController@orderDetail');
+                Route::get('showOrderDetails/{id}', 'API\OrdersController@showOrderDetails');
             });
         });
     });
