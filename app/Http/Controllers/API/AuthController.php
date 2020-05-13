@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\NewUserNotify;
+use App\Mail\NewUser;
 use App\Rider;
 use App\User;
 use App\WholesalerRetailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Mail;
 use JWTAuth;
 
 
@@ -22,22 +25,22 @@ class AuthController extends Controller
             'phone' => 'required|phone:KE|min:10',
             'type' => 'required|string|in:customer,wholesaler,retailer,rider',
             'county' => 'required|string',
-            'location_name'=>'required|string',
+            'location_name' => 'required|string',
             'password' => 'required|string|min:8|same:password_confirmation',
             'password_confirmation' => 'required|string|min:8',
         ]);
 
-        if($request->type == 'wholesaler' || $request->type == 'retailer'){
+        if ($request->type == 'wholesaler' || $request->type == 'retailer') {
             $this->validate($request, [
-                'shop_name'=> 'required|string',
+                'shop_name' => 'required|string',
             ]);
         }
 
-        if($request->type == 'rider'){
+        if ($request->type == 'rider') {
             $this->validate($request, [
-                'operation_area'=> 'required|string',
-                'id_number'=> 'required|string',
-                'vehicle_type'=>'required|string',
+                'operation_area' => 'required|string',
+                'id_number' => 'required|string',
+                'vehicle_type' => 'required|string',
             ]);
         }
 
@@ -47,34 +50,42 @@ class AuthController extends Controller
         $user->phone = $request->phone;
         $user->county = $request->county;
         $user->role = $request->type;
-        $user-> longitude = $request->longitude;
-        $user-> latitude = $request->latitude;
-        $user-> location_name = $request->location_name;
-        $user-> address = $request->address;
+        $user->longitude = $request->longitude;
+        $user->latitude = $request->latitude;
+        $user->location_name = $request->location_name;
+        $user->address = $request->address;
         $user->password = bcrypt($request->password);
         $user->save();
 
-        if($request->type == 'wholesaler' || $request->type == 'retailer'){
-            $wholesaler= new WholesalerRetailer();
+        if ($request->type == 'wholesaler' || $request->type == 'retailer') {
+            $wholesaler = new WholesalerRetailer();
             $wholesaler->shop_name = $request->shop_name;
             $wholesaler->user_id = $user->id;
             $wholesaler->save();
         }
 
-        if($request->type == 'rider'){
-           $rider = new Rider();
-           $rider->id_no = $request->id_number;
-           $rider->area_of_operation = $request->operation_area;
-           $rider->vehicle_type = $request->vehicle_type;
-           $rider-> user_id = $user->id;
-           $rider-> save();
+        if ($request->type == 'rider') {
+            $rider = new Rider();
+            $rider->id_no = $request->id_number;
+            $rider->area_of_operation = $request->operation_area;
+            $rider->vehicle_type = $request->vehicle_type;
+            $rider->user_id = $user->id;
+            $rider->save();
         }
 
+        $data = $request->only(['name', 'email', 'type', 'shop_name', 'location_name', 'phone', 'county']);
+        $admins = User::where('role', 'admin')->get(['email']);
+        Mail::to('support@transmall.co.ke')->bcc($admins)->queue(new NewUser($data));
 
         return response([
             'status' => 'success',
             'data' => $user
         ], 200);
+    }
+
+    protected function sendAdminEmail($data)
+    {
+       $this->dispatch(new NewUserNotify($data));
     }
 
     public function login(Request $request)

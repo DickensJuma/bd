@@ -40,7 +40,9 @@ class ShopController extends Controller
      */
     public function getCategoryProducts($id)
     {
-        return Product::orderBy('title')->where('category_id', $id)->with('brand')->with('files')->get();
+        return Product::orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query){
+            $query->where('verification', 'verified');
+        })->where('category_id', $id)->with('brand')->with('files')->get();
     }
 
     public function searchCategories(Request $request){
@@ -62,13 +64,13 @@ class ShopController extends Controller
 
         if($search = $request->search) {
 
-            $products = Product::orderBy('title')->where('category_id', $request->categoryId)->where(function ($query) use ($search) {
+            $products = Product::orderBy('visitors', 'Desc')->where('category_id', $request->categoryId)->where(function ($query) use ($search) {
                 $query->where('title', 'LIKE', "%$search%");
             })->with('brand')->with('files')->get();
 
             return $products;
         }else{
-            return Product::orderBy('title')->where('category_id', $request->categoryId)->with('brand')->with('files')->get();
+            return Product::orderBy('visitors', 'Desc')->where('category_id', $request->categoryId)->with('brand')->with('files')->get();
         }
     }
 

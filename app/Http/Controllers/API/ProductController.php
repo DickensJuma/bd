@@ -12,6 +12,7 @@ use App\User;
 use App\WholesalerRetailer;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -274,6 +275,18 @@ class ProductController extends Controller
     }
 
     public function featuredProducts(){
-        return Product::orderBy('title')->where('status', 1)->with('brand')->with('files')->with('category')->get()->random(6);
+        return Product::orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query){
+            $query->where('verification', 'verified');
+        })->where('status', 1)->with('brand')->with('files')->with('category')->get()->random(6);
+    }
+
+    public function isVisited(Request $request){
+        $product = Product::where('uniqueId', $request->product_id)->firstOrFail();
+        $product->visitors += 1;
+        $product->update();
+
+        return response([
+            'status' => 'success'
+        ], 200);
     }
 }

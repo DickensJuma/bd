@@ -34,6 +34,7 @@ Route::prefix('v1')->group(function () {
     Route::post('sort-shops', 'API\ShopsController@sortShops');
     Route::post('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
     Route::post('contact', 'API\ContactController@contact');
+    Route::post('visited', 'API\ProductController@isVisited');
     Route::prefix('shopLocal')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
