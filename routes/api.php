@@ -22,6 +22,7 @@ Route::prefix('v1')->group(function () {
     Route::get('subcat_brands/{id}', 'API\ProductController@get_subcategory_brands');
     Route::post('auth/register', 'API\AuthController@register');
     Route::post('auth/login', 'API\AuthController@login');
+    Route::get('/email/resend/{email}', 'API\VerificationController@resend')->name('verification.resend');
     Route::post('auth/emailCheck', 'API\UserController@checkEmail');
     Route::post('password/email', 'API\ForgotPasswordController@sendResetLinkEmail');
     Route::post('password/reset', 'API\ResetPasswordController@reset');
@@ -56,7 +57,7 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('auth/user', 'API\AuthController@user');
         Route::post('auth/logout', 'API\AuthController@logout');
-       Route::get('/email/resend', 'API\VerificationController@resend')->name('verification.resend');
+       
     });
 
     Route::group(['prefix' => 'admin'], function () {
