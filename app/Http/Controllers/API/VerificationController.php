@@ -40,7 +40,6 @@ class VerificationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('jwt.auth')->only('resend');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
     }
@@ -53,12 +52,14 @@ class VerificationController extends Controller
      */
     public function resend(Request $request)
     {
-        if ($request->user()->hasVerifiedEmail()) {
+        $user = User::where('email',$request->route('email'))->firstOrFail();
+
+        if ($user->hasVerifiedEmail()) {
 
             return response(['message'=>'Already verified']);
         }
 
-        $request->user()->sendEmailVerificationNotification();
+        $user->sendEmailVerificationNotification();
 
         if ($request->wantsJson()) {
             return response(['message' => 'Email Sent']);

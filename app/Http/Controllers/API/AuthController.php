@@ -10,6 +10,8 @@ use App\User;
 use App\WholesalerRetailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\VerifiesEmails;
+use Illuminate\Auth\Events\Verified;
 
 use Illuminate\Support\Facades\Mail;
 use JWTAuth;
@@ -17,6 +19,7 @@ use JWTAuth;
 
 class AuthController extends Controller
 {
+    use VerifiesEmails;
     public function register(Request $request)
     {
         $this->validate($request, [
@@ -56,6 +59,7 @@ class AuthController extends Controller
         $user->address = $request->address;
         $user->password = bcrypt($request->password);
         $user->save();
+        $user->sendEmailVerificationNotification();
 
         if ($request->type == 'wholesaler' || $request->type == 'retailer') {
             $wholesaler = new WholesalerRetailer();
@@ -104,10 +108,19 @@ class AuthController extends Controller
                 'msg' => 'Invalid Credentials.'
             ], 400);
         }
-
-        return response([
-            'status' => 'success'
-        ])->header('Authorization', $token);
+        $user = User::where('email',$request->email)->firstOrFail();
+        if($user->email_verified_at !== NULL){
+            return response([
+                'status' => 'success'
+            ])->header('Authorization', $token);
+        }else{
+            return response([
+                'status' => 'error',
+                'error' => 'Account has not been verified',
+                'msg' => 'Account Not Verified.'
+            ], 400);
+        }
+        
     }
 
     /**
