@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\WholesalerRetailer;
+use App\Rider;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
@@ -206,6 +207,20 @@ class UserController extends Controller
             }
         }
             $shop->update();
+        }
+
+        if($request-> role == 'rider' ){
+            $this->validate($request, [
+                'id_number'=>'required',
+                'vehicle_type' => 'required',
+                'operation_area' =>'required'
+            ]);
+            $rider = Rider::updateOrCreate(
+                ['user_id' => $id],
+                ['id_no' => $request->id_number,
+                 'vehicle_type' => $request->vehicle_type,
+                 'area_of_operation'=> $request->operation_area]
+            );
         }
         return response(['status' => 'success'], 200);
     }

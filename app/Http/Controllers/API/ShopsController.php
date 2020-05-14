@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 class ShopsController extends Controller
 {
     public function getShops(){
-        return User::where('role', 'wholesaler')->orWhere('role', 'retailer')->with(array('shop'=>function($query){
+        return User::where('role', 'wholesaler')->orWhere('role', 'retailer')->whereHas('shop', function ($query){
+            $query->where('verification', 'verified');
+        })->with(array('shop'=>function($query){
             $query->select('id', 'shop_name', 'profile_image', 'user_id');
         }))->get('id');
     }
@@ -21,7 +23,7 @@ class ShopsController extends Controller
 
         if($search = $request->search) {
             return User::orderBy('name')->whereHas('shop', function ($query) use ($search) {
-                $query->where('shop_name', 'LIKE', "%$search%");
+                $query->where('shop_name', 'LIKE', "%$search%")->where('verification', 'verified');
             })->with(array('shop'=>function($query){
                 $query->select('id', 'shop_name', 'profile_image', 'user_id');
             }))->get('id');
@@ -33,7 +35,9 @@ class ShopsController extends Controller
             'sort' => 'required|string|in:wholesaler,retailer',
         ]);
 
-        return User::where('role', $request->sort)->with(array('shop'=>function($query){
+        return User::where('role', $request->sort)->whereHas('shop', function ($query){
+            $query->where('verification', 'verified');
+        })->with(array('shop'=>function($query){
             $query->select('id', 'shop_name', 'profile_image', 'user_id');
         }))->get('id');
     }

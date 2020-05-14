@@ -22,16 +22,20 @@ Route::prefix('v1')->group(function () {
     Route::get('subcat_brands/{id}', 'API\ProductController@get_subcategory_brands');
     Route::post('auth/register', 'API\AuthController@register');
     Route::post('auth/login', 'API\AuthController@login');
+    Route::get('/email/resend/{email}', 'API\VerificationController@resend')->name('verification.resend');
     Route::post('auth/emailCheck', 'API\UserController@checkEmail');
     Route::post('password/email', 'API\ForgotPasswordController@sendResetLinkEmail');
     Route::post('password/reset', 'API\ResetPasswordController@reset');
     Route::get('featured-category', 'API\ProductCategoryController@featuredCategory');
+    Route::get('featured-products', 'API\ProductController@featuredProducts');
     Route::get('categories', 'API\ShopController@getCategories');
     Route::get('shops', 'API\ShopsController@getShops');
     Route::post('search-categories', 'API\ShopController@searchCategories');
     Route::post('search-shops', 'API\ShopsController@searchShops');
     Route::post('sort-shops', 'API\ShopsController@sortShops');
     Route::post('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
+    Route::post('contact', 'API\ContactController@contact');
+    Route::post('visited', 'API\ProductController@isVisited');
     Route::prefix('shopLocal')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
@@ -55,7 +59,7 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('auth/user', 'API\AuthController@user');
         Route::post('auth/logout', 'API\AuthController@logout');
-       Route::get('/email/resend', 'API\VerificationController@resend')->name('verification.resend');
+
     });
 
     Route::group(['prefix' => 'admin'], function () {
@@ -131,9 +135,12 @@ Route::prefix('v1')->group(function () {
             Route::group(['prefix' => 'dashboard'], function () {
                 Route::get('shipping', 'API\DeliveryController@index');
                 Route::get('showShippingInfo/{id}', 'API\DeliveryController@shopInfo');
+                Route::get('rider-details/{id}', 'API\RiderController@riderDetail');
+                Route::post('user/{id}', 'API\UserController@update');
             });
         });
     });
+    
     //customer
     Route::group(['prefix' => 'customer'], function () {
         //prefix(profile)
