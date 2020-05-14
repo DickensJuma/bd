@@ -17,7 +17,7 @@ class DeliveryController extends Controller
      */
     public function index()
     {
-        //
+       return Delivery::where('Rider_id',auth()->user()->id)->with('order')->get();
     }
      public function rider($id){
         $order_id = order::where('orderNo', $id)->value('id');
@@ -25,6 +25,9 @@ class DeliveryController extends Controller
         return User::where('id',$user_id)->with('ride')->firstOrFail();
      }
 
+     public function shopInfo($id){
+         return order::where('orderNo', $id)->with('items.product.files')->with('customer')->with('coupon')->firstOrFail();
+     }
 
     /**
      * Store a newly created resource in storage.
