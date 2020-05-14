@@ -87,11 +87,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    protected function sendAdminEmail($data)
-    {
-       $this->dispatch(new NewUserNotify($data));
-    }
-
     public function login(Request $request)
     {
         $this->validate($request, [
@@ -108,7 +103,7 @@ class AuthController extends Controller
                 'msg' => 'Invalid Credentials.'
             ], 400);
         }
-        $user = User::where('email',$request->email)->firstOrFail();
+        $user = User::where('email', $request->email)->firstOrFail();
         if($user->email_verified_at !== NULL){
             return response([
                 'status' => 'success'
@@ -120,7 +115,7 @@ class AuthController extends Controller
                 'msg' => 'Account Not Verified.'
             ], 400);
         }
-        
+
     }
 
     /**
