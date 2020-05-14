@@ -18,8 +18,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::where('role','admin')->latest()->get();
+        return User::where('role', 'admin')->latest()->get();
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -42,26 +43,31 @@ class UserController extends Controller
         return ['data' => $data];
 
     }
+
     public function customers()
     {
-        return User::where('role','customer')->latest()->get();
+        return User::where('role', 'customer')->latest()->get();
     }
+
     public function rider()
     {
-        return User::where('role','rider')->latest()->get();
+        return User::where('role', 'rider')->latest()->get();
     }
+
     public function wholesaler()
     {
-        return User::where('role','wholesaler')->latest()->get();
+        return User::where('role', 'wholesaler')->latest()->get();
     }
+
     public function retailer()
     {
-        return User::where('role','retailer')->latest()->get();
+        return User::where('role', 'retailer')->latest()->get();
     }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -78,18 +84,18 @@ class UserController extends Controller
         ]);
         $user = new User();
         $user->name = $request->name;
-        $user->email =$request->email;
-        $user-> phone = $request->phone;
-        $user-> role = $request->role;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->role = $request->role;
         $user->county = $request->county;
-        $user->location_name =$request->town;
+        $user->location_name = $request->town;
         $user->password = Hash::make($request->password);
         $user->save();
 
 
-        if($request-> role == 'wholesaler' || $request-> role == 'retailer'){
+        if ($request->role == 'wholesaler' || $request->role == 'retailer') {
             $this->validate($request, [
-                'shop'=>'required|string|max:191 ',
+                'shop' => 'required|string|max:191 ',
             ]);
 
             $shop = new WholesalerRetailer();
@@ -104,72 +110,99 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $user = User::findorFail($id);
-        return response($user,200);
+        return response($user, 200);
     }
 
-    public function showDetails($id){
-        return User::where('id',$id)->with('shop')->with('ride')->firstOrFail();
+    public function showDetails($id)
+    {
+        return User::where('id', $id)->with('shop')->with('ride')->with('product')->firstOrFail();
     }
-    public function status(Request $request, $id){
-       $user = User::findOrFail($id);
-       $user->status = $request->status;
-       $user->update();
+
+    public function status(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = $request->status;
+        $user->update();
+
+        return response()->json([
+            'status' => 'success'
+        ], 200);
+    }
+
+    public function verificationStatus(Request $request, $id)
+    {
+        $this->validate($request, [
+            'verification' => 'required|string|in:verified,unverified',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        if ($user->role == 'wholesaler' || $user->role == 'retailer'){
+            $shop = WholesalerRetailer::where('user_id', $id)->firstOrFail();
+            $shop->verification = $request->verification;
+            $shop->update();
+
+            return response()->json([
+                'status' => 'success'
+            ], 200);
+        }
     }
 
     public function userUpdate(Request $request, $id)
     {
         $user = User::findorFail($id);
-        $this->validate($request,[
+        $this->validate($request, [
             'name' => 'required|string|max:191',
-            'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
+            'email' => 'required|string|email|max:191|unique:users,email,' . $user->id,
             'town' => 'required|string|max:191',
             'phone' => 'required|string|max:191',
             'county' => 'required|string|max:191',
             'role' => 'required|string|max:191',
         ]);
 
-        if($request->password){
-                $this->validate($request, [
-                    'password' => 'required|string|min:8',
-                ]);
-                $user->password = bcrypt($request->password);
+        if ($request->password) {
+            $this->validate($request, [
+                'password' => 'required|string|min:8',
+            ]);
+            $user->password = bcrypt($request->password);
         }
         $user->name = $request->name;
         $user->email = $request->email;
         $user->county = $request->county;
-        $user-> phone = $request->phone;
+        $user->phone = $request->phone;
         $user->location_name = $request->town;
         $user->role = $request->role;
         $user->update();
         return response(['status' => 'success'], 200);
     }
+
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $user = User::findorFail($id);
-        $this->validate($request,[
+        $this->validate($request, [
             'name' => 'required|string|max:191',
             'password' => 'sometimes|required|min:6',
-            'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
+            'email' => 'required|string|email|max:191|unique:users,email,' . $user->id,
             'location_name' => 'required|string|max:191',
             'role' => 'required|string|max:191',
             'phone' => 'required|string|max:191',
         ]);
-        if($request-> password){
+        if ($request->password) {
             $this->validate($request, [
-                'password'=>'required|string|min:6'
+                'password' => 'required|string|min:6'
             ]);
             $user->password = bcrypt($request->password);
         }
@@ -179,47 +212,47 @@ class UserController extends Controller
         $user->phone = $request->phone;
         $user->county = $request->county;
         $user->role = $request->role;
-        $user-> longitude = $request->longitude;
-        $user-> latitude = $request->latitude;
-        $user-> location_name = $request->location_name;
-        $user-> address = $request->address;
+        $user->longitude = $request->longitude;
+        $user->latitude = $request->latitude;
+        $user->location_name = $request->location_name;
+        $user->address = $request->address;
         $user->update();
 
-        if($request-> role == 'wholesaler' || $request-> role == 'retailer'){
+        if ($request->role == 'wholesaler' || $request->role == 'retailer') {
             $this->validate($request, [
-                'shop_name'=>'required',
+                'shop_name' => 'required',
             ]);
 
-        $shop = WholesalerRetailer::where('user_id',$user->id)->firstOrFail();
-        $shop->shop_name = $request->shop_name;
+            $shop = WholesalerRetailer::where('user_id', $user->id)->firstOrFail();
+            $shop->shop_name = $request->shop_name;
 
-        if ($request->Imagefile) {
+            if ($request->Imagefile) {
 
-            $file = $request->Imagefile;
-            $ext = explode('/', explode(':', substr($file, 0,
-                strpos($file, ';')))[1])[1];
+                $file = $request->Imagefile;
+                $ext = explode('/', explode(':', substr($file, 0,
+                    strpos($file, ';')))[1])[1];
 
-            if (in_array($ext, ['png', 'jpg', 'jpeg'])) {
-                $image = time() . '.' . explode('/', explode(':', substr($file, 0,
-                        strpos($file, ';')))[1])[1];
-                \Image::make($file)->resize(500, 500)->save(public_path('/storage/uploads/') . $image);
-                $shop->profile_image = $image;
+                if (in_array($ext, ['png', 'jpg', 'jpeg'])) {
+                    $image = time() . '.' . explode('/', explode(':', substr($file, 0,
+                            strpos($file, ';')))[1])[1];
+                    \Image::make($file)->resize(500, 500)->save(public_path('/storage/uploads/') . $image);
+                    $shop->profile_image = $image;
+                }
             }
-        }
             $shop->update();
         }
 
-        if($request-> role == 'rider' ){
+        if ($request->role == 'rider') {
             $this->validate($request, [
-                'id_number'=>'required',
+                'id_number' => 'required',
                 'vehicle_type' => 'required',
-                'operation_area' =>'required'
+                'operation_area' => 'required'
             ]);
             $rider = Rider::updateOrCreate(
                 ['user_id' => $id],
                 ['id_no' => $request->id_number,
-                 'vehicle_type' => $request->vehicle_type,
-                 'area_of_operation'=> $request->operation_area]
+                    'vehicle_type' => $request->vehicle_type,
+                    'area_of_operation' => $request->operation_area]
             );
         }
         return response(['status' => 'success'], 200);
@@ -228,25 +261,26 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return ['message'=> 'user deleted'];
+        return ['message' => 'user deleted'];
     }
 
-    public function checkEmail(Request $request){
+    public function checkEmail(Request $request)
+    {
 
         $validatedData = $request->validate([
             "email" => "email || required"
         ]);
 
-        $user = User::where('email','=',$validatedData['email'])->firstorfail();
+        $user = User::where('email', '=', $validatedData['email'])->firstorfail();
 
-        return response(['status'=>'Found'], 200);
+        return response(['status' => 'Found'], 200);
     }
 
 }

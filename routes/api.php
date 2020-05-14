@@ -78,6 +78,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('retailer', 'API\UserController@retailer');
                 Route::get('userDetails/{id}', 'API\UserController@showDetails');
                 Route::patch('changeStatus/{id}','API\UserController@status');
+                Route::patch('changeVerificationStatus/{id}','API\UserController@verificationStatus');
                 Route::prefix('shopLocal')->group(function () {
                     Route::apiResources(['category' => 'API\ProductCategoryController']);
                     Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
@@ -140,7 +141,7 @@ Route::prefix('v1')->group(function () {
             });
         });
     });
-    
+
     //customer
     Route::group(['prefix' => 'customer'], function () {
         //prefix(profile)
