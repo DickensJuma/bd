@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AccountUnverified;
+use App\Mail\AccountVerified;
 use App\WholesalerRetailer;
 use App\Rider;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -143,10 +146,28 @@ class UserController extends Controller
 
         $user = User::findOrFail($id);
 
+        if ($request->verification == 'verified'){
+            Mail::to($user)->queue(new AccountVerified($user));
+        }
+
+        if ($request->verification == 'unverified'){
+            Mail::to($user)->queue(new AccountUnverified($user));
+        }
+
         if ($user->role == 'wholesaler' || $user->role == 'retailer'){
             $shop = WholesalerRetailer::where('user_id', $id)->firstOrFail();
             $shop->verification = $request->verification;
             $shop->update();
+
+            return response()->json([
+                'status' => 'success'
+            ], 200);
+        }
+
+        if ($user->role == 'rider'){
+            $rider = Rider::where('user_id', $id)->firstOrFail();
+            $rider->verification = $request->verification;
+            $rider->update();
 
             return response()->json([
                 'status' => 'success'

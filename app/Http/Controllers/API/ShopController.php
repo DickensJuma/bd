@@ -42,7 +42,7 @@ class ShopController extends Controller
     {
         return Product::orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query){
             $query->where('verification', 'verified');
-        })->where('category_id', $id)->with('brand')->with('files')->get();
+        })->where('disabled', 'enabled')->where('category_id', $id)->with('brand')->with('files')->get();
     }
 
     public function searchCategories(Request $request){
