@@ -113,6 +113,14 @@ class UserController extends Controller
         return response($user,200);
     }
 
+    public function showDetails($id){
+        return User::where('id',$id)->with('shop')->with('ride')->firstOrFail();
+    }
+    public function status(Request $request, $id){
+       $user = User::findOrFail($id);
+       $user->status = $request->status;
+       $user->update();
+    }
 
     public function userUpdate(Request $request, $id)
     {
@@ -124,7 +132,7 @@ class UserController extends Controller
             'phone' => 'required|string|max:191',
             'county' => 'required|string|max:191',
             'role' => 'required|string|max:191',
-        ]); 
+        ]);
 
         if($request->password){
                 $this->validate($request, [
@@ -181,12 +189,12 @@ class UserController extends Controller
             $this->validate($request, [
                 'shop_name'=>'required',
             ]);
-        
+
         $shop = WholesalerRetailer::where('user_id',$user->id)->firstOrFail();
         $shop->shop_name = $request->shop_name;
-            
+
         if ($request->Imagefile) {
-            
+
             $file = $request->Imagefile;
             $ext = explode('/', explode(':', substr($file, 0,
                 strpos($file, ';')))[1])[1];

@@ -13,6 +13,6 @@ class Delivery extends Model
         return $this->belongsTo(User::class, 'Rider_id');
     }
     public function order(){
-        return $this->belongsTo(User::class, 'Order_id');
+        return $this->belongsTo(order::class, 'Order_id');
     }
 }

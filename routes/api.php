@@ -59,7 +59,7 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('auth/user', 'API\AuthController@user');
         Route::post('auth/logout', 'API\AuthController@logout');
-       
+
     });
 
     Route::group(['prefix' => 'admin'], function () {
@@ -76,6 +76,8 @@ Route::prefix('v1')->group(function () {
                 Route::get('rider', 'API\UserController@rider');
                 Route::get('wholesaler', 'API\UserController@wholesaler');
                 Route::get('retailer', 'API\UserController@retailer');
+                Route::get('userDetails/{id}', 'API\UserController@showDetails');
+                Route::patch('changeStatus/{id}','API\UserController@status');
                 Route::prefix('shopLocal')->group(function () {
                     Route::apiResources(['category' => 'API\ProductCategoryController']);
                     Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
@@ -103,7 +105,7 @@ Route::prefix('v1')->group(function () {
     });
     // wholesaler || retailer
     Route::group(['prefix' => 'retailer'], function () {
-        //shopLocal
+        //prefix(dashboard)
         Route::group(['middleware' => ['auth.role:retailer,wholesaler','jwt.auth']], function () {
             Route::group(['prefix' => 'dashboard'], function () {
                 Route::post('products', 'API\ProductController@myproducts');
@@ -126,22 +128,22 @@ Route::prefix('v1')->group(function () {
             });
         });
     });
-
-    // rider
+    //Rider
     Route::group(['prefix' => 'rider'], function () {
-        //shopLocal
-        Route::group(['middleware' => ['auth.role:rider','jwt.auth']], function () {
+        //prefix(dashboard)
+        Route::group(['middleware' => ['auth.role:rider', 'jwt.auth']], function () {
             Route::group(['prefix' => 'dashboard'], function () {
+                Route::get('shipping', 'API\DeliveryController@index');
+                Route::get('showShippingInfo/{id}', 'API\DeliveryController@shopInfo');
                 Route::get('rider-details/{id}', 'API\RiderController@riderDetail');
                 Route::post('user/{id}', 'API\UserController@update');
             });
         });
     });
-
-
-
+    
+    //customer
     Route::group(['prefix' => 'customer'], function () {
-        //shopLocal
+        //prefix(profile)
         Route::group(['middleware' => ['auth.role:customer', 'jwt.auth']], function () {
             Route::group(['prefix' => 'profile'], function () {
                 Route::put('account', 'API\CustomerProfileController@account');
