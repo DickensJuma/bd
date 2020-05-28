@@ -255,6 +255,17 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function activate($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->disabled = 'enabled';
+        $product->update();
+
+        return response([
+            'status' => 'success'
+        ], 200);
+    }
+
     public function deleteImage($id)
     {
         $image = ProductImage::findOrFail($id);
