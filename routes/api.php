@@ -78,6 +78,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('retailer', 'API\UserController@retailer');
                 Route::get('userDetails/{id}', 'API\UserController@showDetails');
                 Route::patch('changeStatus/{id}','API\UserController@status');
+                Route::patch('changeVerificationStatus/{id}','API\UserController@verificationStatus');
                 Route::prefix('shopLocal')->group(function () {
                     Route::apiResources(['category' => 'API\ProductCategoryController']);
                     Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
@@ -96,6 +97,7 @@ Route::prefix('v1')->group(function () {
                     Route::patch('update-status/{id}', 'API\ProductController@changeStatus');
                     Route::delete('delete-image/{id}', 'API\ProductController@deleteImage');
                     Route::delete('delete-product/{id}', 'API\ProductController@destroy');
+                    Route::patch('activate-product/{id}', 'API\ProductController@activate');
                     Route::post('update-product/{id}', 'API\ProductController@update');
                     Route::post('delivery/{id}','API\DeliveryController@store');
                     Route::get('myRider/{id}','API\DeliveryController@rider');

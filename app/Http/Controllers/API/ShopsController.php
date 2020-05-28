@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class ShopsController extends Controller
 {
     public function getShops(){
-        return User::where('role', 'wholesaler')->orWhere('role', 'retailer')->whereHas('shop', function ($query){
+        return User::whereIn('role', ['wholesaler', 'retailer'])->whereHas('shop', function ($query){
             $query->where('verification', 'verified');
         })->with(array('shop'=>function($query){
             $query->select('id', 'shop_name', 'profile_image', 'user_id');

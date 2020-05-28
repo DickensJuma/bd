@@ -29,7 +29,7 @@ class ProductController extends Controller
             $query->select('id', 'name');
         }))->with(array('subcategory' => function ($query) {
             $query->select('id', 'name');
-        }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status']);
+        }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status', 'disabled']);
     }
     public function suplier()
     {
@@ -247,7 +247,19 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
-        $product->delete();
+        $product->disabled = 'disabled';
+        $product->update();
+
+        return response([
+            'status' => 'success'
+        ], 200);
+    }
+
+    public function activate($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->disabled = 'enabled';
+        $product->update();
 
         return response([
             'status' => 'success'
@@ -277,7 +289,7 @@ class ProductController extends Controller
     public function featuredProducts(){
         return Product::orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query){
             $query->where('verification', 'verified');
-        })->where('status', 1)->with('brand')->with('files')->with('category')->get()->random(6);
+        })->where('status', 1)->where('disabled', 'enabled')->with('brand')->with('files')->with('category')->get()->random(6);
     }
 
     public function isVisited(Request $request){
