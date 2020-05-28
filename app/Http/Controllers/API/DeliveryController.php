@@ -22,9 +22,19 @@ class DeliveryController extends Controller
      public function rider($id){
         $order_id = order::where('orderNo', $id)->value('id');
         $user_id = Delivery::where('Order_id',$order_id)->value("Rider_id");
-        return User::where('id',$user_id)->with('ride')->firstOrFail();
+        return User::where('id',$user_id)->with('ride')->get();
      }
 
+     public function myRider(Request $request,$id){
+        $order_id = order::where('orderNo',$id)->value('id');
+         $rider = Delivery::where('Order_id', $order_id)->firstOrFail();
+         $rider->Rider_id = $request->rider;
+         $rider->update();
+
+         return response([
+             'status' => 'success'
+         ], 200);
+     }
      public function shopInfo($id){
          return order::where('orderNo', $id)->with('items.product.files')->with('customer')->with('coupon')->firstOrFail();
      }
