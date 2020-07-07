@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\NewUserNotify;
+use App\log;
 use App\Mail\NewUser;
 use App\Rider;
 use App\User;
@@ -12,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Auth\Events\Verified;
-
+use App\Events\LogsSuccessfulLogin;
 use Illuminate\Support\Facades\Mail;
 use JWTAuth;
 
@@ -105,9 +106,14 @@ class AuthController extends Controller
         }
         $user = User::where('email', $request->email)->firstOrFail();
         if($user->email_verified_at !== NULL){
+            $log = new log();
+            $log->user_id = $user->id;
+            $log->ip_address = $request->ip();
+            $log->save();
             return response([
                 'status' => 'success'
             ])->header('Authorization', $token);
+
         }else{
             return response([
                 'status' => 'error',

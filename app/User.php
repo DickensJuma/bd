@@ -65,6 +65,9 @@ class User extends Authenticatable implements JwtSubject
     public function shop(){
         return $this->hasOne(WholesalerRetailer::class, 'user_id');
     }
+    public function log(){
+        return $this->hasMany(log::class, 'user_id');
+    }
     public function ride(){
         return $this->hasOne(Rider::class, 'user_id');
     }
