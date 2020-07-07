@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Auth\Events\Verified;
-use App\Events\LogsSuccessfulLogin;
 use Illuminate\Support\Facades\Mail;
 use JWTAuth;
 
