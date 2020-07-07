@@ -15,7 +15,7 @@ class LogsController extends Controller
      */
     public function index()
     {
-        return log::with('logs')->get();
+        return log::latest()->with('logs')->get();
     }
 
     /**
