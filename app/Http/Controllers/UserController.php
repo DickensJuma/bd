@@ -148,19 +148,30 @@ class UserController extends Controller
                     $file->name = $name;
                     $file->filename = $filename;
                     $file->save();
+                }else if(in_array($ext, ['pdf', 'doc', 'docx','ods'])){
+                    $name = $uploadedFile->getClientOriginalName();
+                    $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
+                    $file = new RiderDocs();
+                    $file->rider_id = $request->id;
+                    $file->name = $name;
+                    $file->filename = $filename;
+                    $file->save();
                 }
-                $name = $uploadedFile->getClientOriginalName();
-                $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
-                $file = new RiderDocs();
-                $file->rider_id = $request->id;
-                $file->name = $name;
-                $file->filename = $filename;
-                $file->save();
+
             }
         }
         return response()->json([
             'status' => 'success'
         ], 200);
+    }
+
+    public function riderDocs($id){
+        return RiderDocs::where('rider_id',$id)->get();
+    }
+    public function deleteDocs($id){
+        $doc = RiderDocs::findOrFail($id);
+        $doc->delete();
+        return ['message' => 'doc deleted'];
     }
 
     public function status(Request $request, $id)
@@ -327,7 +338,13 @@ class UserController extends Controller
         $user->delete();
         return ['message' => 'user deleted'];
     }
+    public function downloadFile($id)
+    {
+        $file = RiderDocs::where('id', $id)->firstOrFail();
+        $pathToFile = storage_path('app/' . $file->filename);
 
+        return response()->download($pathToFile);
+    }
     public function checkEmail(Request $request)
     {
 

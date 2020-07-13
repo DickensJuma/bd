@@ -79,6 +79,9 @@ Route::prefix('v1')->group(function () {
                 Route::get('retailer', 'API\UserController@retailer');
                 Route::get('userDetails/{id}', 'API\UserController@showDetails');
                 Route::post('riderDocuments', 'API\UserController@riderDocuments');
+                Route::get('riderDocs/{id}', 'API\UserController@riderDocs');
+                Route::get('deleteDocs/{id}', 'API\UserController@deleteDocs');
+                Route::get('download/{orderId}', 'API\UserController@downloadFile');
                 Route::patch('changeStatus/{id}','API\UserController@status');
                 Route::patch('changeVerificationStatus/{id}','API\UserController@verificationStatus');
                 Route::prefix('shopLocal')->group(function () {
