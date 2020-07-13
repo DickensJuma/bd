@@ -147,6 +147,7 @@ class UserController extends Controller
                     $file->rider_id = $request->id;
                     $file->name = $name;
                     $file->filename = $filename;
+                    $file->type = 'image';
                     $file->save();
                 }else if(in_array($ext, ['pdf', 'doc', 'docx','ods'])){
                     $name = $uploadedFile->getClientOriginalName();
@@ -155,6 +156,7 @@ class UserController extends Controller
                     $file->rider_id = $request->id;
                     $file->name = $name;
                     $file->filename = $filename;
+                    $file->type = 'docx';
                     $file->save();
                 }
 
