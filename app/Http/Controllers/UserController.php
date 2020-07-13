@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Mail\AccountUnverified;
 use App\Mail\AccountVerified;
+use App\RiderDocs;
 use App\WholesalerRetailer;
 use App\Rider;
 use Illuminate\Http\Request;
@@ -125,6 +126,41 @@ class UserController extends Controller
     public function showDetails($id)
     {
         return User::where('id', $id)->with('shop')->with('ride')->with('product')->firstOrFail();
+    }
+
+
+    public function riderDocuments(Request $request)
+    {
+        $this->validate($request,[
+            'id'=>'required|integer'
+        ]);
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $uploadedFile) {
+                $ext = $uploadedFile->getClientOriginalExtension();
+                if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
+                    $name = $uploadedFile->getClientOriginalName();
+                    $filename = time() . $uploadedFile->getClientOriginalName();
+                    \Image::make($uploadedFile)->resize(600, 600, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->save(public_path('/storage/uploads/') . $filename);
+                    $file = new RiderDocs();
+                    $file->rider_id = $request->id;
+                    $file->name = $name;
+                    $file->filename = $filename;
+                    $file->save();
+                }
+                $name = $uploadedFile->getClientOriginalName();
+                $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
+                $file = new RiderDocs();
+                $file->rider_id = $request->id;
+                $file->name = $name;
+                $file->filename = $filename;
+                $file->save();
+            }
+        }
+        return response()->json([
+            'status' => 'success'
+        ], 200);
     }
 
     public function status(Request $request, $id)

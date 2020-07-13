@@ -70,7 +70,6 @@ class OrdersController extends Controller
             'phone' => 'required|phone:KE|min:10',
             'cart' => 'required'
         ]);
-
         $order = new order();
         if ($request->coupon_unique_id){
             $coupon = Coupon::where('unique_id', $request->coupon_unique_id)->firstOrFail();
@@ -95,12 +94,24 @@ class OrdersController extends Controller
         $order->LocationName = $request->LocationName;
         $order->save();
 
+
+
         foreach ($request->cart as $item) {
-            $orderItem = new orderItem();
-            $orderItem->order_id = $order->id;
-            $orderItem->product_id = $item['product']['id'];
-            $orderItem->quantity = $item['quantity'];
-            $orderItem->save();
+            /*$categories[$item['product']['user_id']][] =$item;
+            return  $categories;*/
+           /*  foreach($categories as $itemz) {
+                 $orderItem = new orderItem();
+                 $orderItem->order_id = $order->id;
+                 $orderItem->product_id = $itemz['product']['id'];
+                 $orderItem->quantity = $itemz['quantity'];
+                 $orderItem->shipment_id = time();
+                 $orderItem->save();
+             }*/
+                     $orderItem = new orderItem();
+                      $orderItem->order_id = $order->id;
+                      $orderItem->product_id = $item['product']['id'];
+                      $orderItem->quantity = $item['quantity'];
+                      $orderItem->save();
         }
 
         // Pay

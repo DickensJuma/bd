@@ -78,6 +78,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('wholesaler', 'API\UserController@wholesaler');
                 Route::get('retailer', 'API\UserController@retailer');
                 Route::get('userDetails/{id}', 'API\UserController@showDetails');
+                Route::post('riderDocuments', 'API\UserController@riderDocuments');
                 Route::patch('changeStatus/{id}','API\UserController@status');
                 Route::patch('changeVerificationStatus/{id}','API\UserController@verificationStatus');
                 Route::prefix('shopLocal')->group(function () {
