@@ -94,26 +94,14 @@ class OrdersController extends Controller
         $order->LocationName = $request->LocationName;
         $order->save();
 
-
-
         foreach ($request->cart as $item) {
-            /*$categories[$item['product']['user_id']][] =$item;
-            return  $categories;*/
-           /*  foreach($categories as $itemz) {
-                 $orderItem = new orderItem();
-                 $orderItem->order_id = $order->id;
-                 $orderItem->product_id = $itemz['product']['id'];
-                 $orderItem->quantity = $itemz['quantity'];
-                 $orderItem->shipment_id = time();
-                 $orderItem->save();
-             }*/
-                     $orderItem = new orderItem();
-                      $orderItem->order_id = $order->id;
-                      $orderItem->product_id = $item['product']['id'];
-                      $orderItem->quantity = $item['quantity'];
-                      $orderItem->save();
+            $orderItem = new orderItem();
+            $orderItem->order_id = $order->id;
+            $orderItem->product_id = $item['product']['id'];
+            $orderItem->quantity = $item['quantity'];
+            $orderItem->shipment_id = $item['product']['user_id'];
+            $orderItem->save();
         }
-
         // Pay
         $phoneNo = '254' . substr($request->phone, -9);
         $trans_id = $order->orderNo; // unique id
@@ -171,7 +159,11 @@ class OrdersController extends Controller
             return order::where('orderNo', $id)->with('items.product.files')->with('customer')->with('coupon')->firstOrFail();
         }
     }
-
+    public function shipment($id)
+    {
+        $order_id = order::where('orderNo',$id)->value('id');
+        return orderItem::where('order_id', $order_id)->with("product")->with('product.files')->get()->groupBy('shipment_id');
+    }
     public function changeStatus(Request $request, $id){
         $order = order::where('orderNo', $id)->firstOrFail();
         $order->status = $request->status;
