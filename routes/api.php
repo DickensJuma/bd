@@ -95,6 +95,7 @@ Route::prefix('v1')->group(function () {
                     Route::get('brand-products/{id}', 'API\ProductController@getProducts');
                     Route::get('order', 'API\OrdersController@showAll');
                     Route::get('show-details/{id}', 'API\OrdersController@showDetails');
+                    Route::get('shipment/{id}', 'API\OrdersController@shipment');
                     Route::patch('change-status/{id}', 'API\OrdersController@changeStatus');
                     Route::get('all-products', 'API\ProductController@index');
                     Route::apiResources(['coupon' => 'API\CouponsController']);

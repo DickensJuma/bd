@@ -23,8 +23,8 @@ class DeliveryController extends Controller
     public function rider($id)
     {
         $order_id = order::where('orderNo', $id)->value('id');
-        $user_id = Delivery::where('Order_id', $order_id)->value("Rider_id");
-        return User::where('id', $user_id)->with('ride')->get();
+        $user_id = Delivery::where('Order_id', $order_id)->with('rider')->get();
+        return  $user_id;
     }
 
     public function myRider(Request $request,$id){
@@ -51,7 +51,8 @@ class DeliveryController extends Controller
     public function store(Request $request, $id)
     {
         $this->validate($request, [
-            'rider' => 'required|integer'
+            'rider' => 'required|integer',
+            'shipping' =>'required|integer'
         ]);
         $customer_id = order::where('orderNo', $id)->value('customer_id');
         $order_id = order::where('orderNo', $id)->value('id');
@@ -59,11 +60,13 @@ class DeliveryController extends Controller
         $delivery->Rider_id = $request->rider;
         $delivery->Customer_id = $customer_id;
         $delivery->Order_id = $order_id;
+        $delivery->shipping_id =$request->shipping;
+        $delivery->status = "in-transit";
         $delivery->save();
 
-        $order = order::where('orderNo', $id)->firstOrFail();
+       /* $order = order::where('orderNo', $id)->firstOrFail();
         $order->status = "in-transit";
-        $order->update();
+        $order->update();*/
 
         return response([
             'status' => 'success'
