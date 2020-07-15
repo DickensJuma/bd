@@ -99,7 +99,7 @@ class OrdersController extends Controller
             $orderItem->order_id = $order->id;
             $orderItem->product_id = $item['product']['id'];
             $orderItem->quantity = $item['quantity'];
-            $orderItem->shipment_id = $item['product']['user_id'];
+            $orderItem->shipment_id =  $order->id.$item['product']['user_id'];
             $orderItem->save();
         }
         // Pay
