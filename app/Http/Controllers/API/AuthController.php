@@ -7,6 +7,7 @@ use App\Jobs\NewUserNotify;
 use App\log;
 use App\Mail\NewUser;
 use App\Rider;
+use App\Traits\SendPhoneVerificationCodeTrait;
 use App\User;
 use App\WholesalerRetailer;
 use Illuminate\Http\Request;
@@ -19,7 +20,48 @@ use JWTAuth;
 
 class AuthController extends Controller
 {
-    use VerifiesEmails;
+    use VerifiesEmails, SendPhoneVerificationCodeTrait;
+
+    public function createRiderAccount(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|string',
+            'phone' => 'required|phone:KE|min:10|unique:users',
+            'type' => 'required|string|in:rider',
+            'password' => 'required|string|min:8|same:password_confirmation',
+            'password_confirmation' => 'required|string|min:8',
+            'id_number' => 'required|string',
+            'vehicle_type' => 'required|string',
+        ]);
+
+        $code = random_int(100000, 999999);
+
+        \DB::transaction(function () use ($request, $code) {
+            $user = new User();
+            $user->name = $request->name;
+            $user->phone = $request->phone;
+            $user->role = $request->type;
+            $user->verification_code = $code;
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            $rider = new Rider();
+            $rider->id_no = $request->id_number;
+            $rider->vehicle_type = $request->vehicle_type;
+            $rider->user_id = $user->id;
+            $rider->save();
+        });
+
+        if ($this->sendPhoneVerificationCode($request->phone, $code)){
+            return response()->json([
+                'status' => 'success',
+            ], 200);
+        }
+
+        return response()->json([
+            'status' => 'error',
+        ], 400);
+    }
 
     public function register(Request $request)
     {
@@ -82,7 +124,7 @@ class AuthController extends Controller
         $admins = User::where('role', 'admin')->get(['email']);
         Mail::to('support@transmall.co.ke')->bcc($admins)->queue(new NewUser($data));
 
-        return response([
+        return response()->json([
             'status' => 'success',
             'data' => $user
         ], 200);
@@ -98,7 +140,7 @@ class AuthController extends Controller
         $details = $request->only('email', 'password');
 
         if (!$token = JWTAuth::attempt($details)) {
-            if ($request->app == 1){
+            if ($request->app == 1) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid Email or Password',
@@ -114,7 +156,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->firstOrFail();
 
         if (!$user->hasVerifiedEmail()) {
-            if ($request->app == 1){
+            if ($request->app == 1) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Email account not verified',

@@ -37,6 +37,7 @@ class User extends Authenticatable implements JwtSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
     ];
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -80,5 +81,17 @@ class User extends Authenticatable implements JwtSubject
     public function sendEmailVerificationNotification()
     {
         $this->notify(new verifyEmail());
+    }
+
+    public function hasVerifiedPhone()
+    {
+        return ! is_null($this->phone_verified_at);
+    }
+
+    public function markPhoneAsVerified()
+    {
+        return $this->forceFill([
+            'phone_verified_at' => $this->freshTimestamp(),
+        ])->save();
     }
 }

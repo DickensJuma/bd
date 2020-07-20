@@ -15,10 +15,10 @@ class CreateRidersTable extends Migration
     {
         Schema::create('riders', function (Blueprint $table) {
             $table->id();
-            $table->string('area_of_operation');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('id_no');
             $table->string('vehicle_type');
+            $table->string('verification')->default('unverified');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')
