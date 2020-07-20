@@ -15,4 +15,8 @@ class orderItem extends Model
         return $this->belongsTo(Product::class, 'product_id');
     }
 
+    public function deliveries(){
+        return $this->hasOne(Delivery::class, 'shipping_id');
+    }
+
 }

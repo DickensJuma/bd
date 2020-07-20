@@ -107,6 +107,7 @@ Route::prefix('v1')->group(function () {
                     Route::post('update-product/{id}', 'API\ProductController@update');
                     Route::post('delivery/{id}','API\DeliveryController@store');
                     Route::get('myRider/{id}','API\DeliveryController@rider');
+                    Route::get('getShop/{id}','API\DeliveryController@getShop');
                     Route::post('Rider/{id}','API\DeliveryController@myRider');
                 });
             });

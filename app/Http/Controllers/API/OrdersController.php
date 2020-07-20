@@ -162,7 +162,7 @@ class OrdersController extends Controller
     public function shipment($id)
     {
         $order_id = order::where('orderNo',$id)->value('id');
-        return orderItem::where('order_id', $order_id)->with("product")->with('product.files')->get()->groupBy('shipment_id');
+        return orderItem::where('order_id', $order_id)->with("product")->with('deliveries')->with('product.files')->get()->groupBy('shipment_id');
     }
     public function changeStatus(Request $request, $id){
         $order = order::where('orderNo', $id)->firstOrFail();
