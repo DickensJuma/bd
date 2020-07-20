@@ -20,6 +20,7 @@ use JWTAuth;
 class AuthController extends Controller
 {
     use VerifiesEmails;
+
     public function register(Request $request)
     {
         $this->validate($request, [
@@ -97,6 +98,13 @@ class AuthController extends Controller
         $details = $request->only('email', 'password');
 
         if (!$token = JWTAuth::attempt($details)) {
+            if ($request->app == 1){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid Email or Password',
+                ], 401);
+            }
+
             return response([
                 'status' => 'error',
                 'error' => 'invalid.credentials',
@@ -104,21 +112,37 @@ class AuthController extends Controller
             ], 400);
         }
         $user = User::where('email', $request->email)->firstOrFail();
-        if($user->email_verified_at !== NULL){
-            $log = new log();
-            $log->user_id = $user->id;
-            $log->ip_address = $request->ip();
-            $log->save();
-            return response([
-                'status' => 'success'
-            ])->header('Authorization', $token);
 
-        }else{
+        if (!$user->hasVerifiedEmail()) {
+            if ($request->app == 1){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email account not verified',
+                ], 401);
+            }
+
             return response([
                 'status' => 'error',
                 'error' => 'Account has not been verified',
                 'msg' => 'Account Not Verified.'
             ], 400);
+        }
+
+        $log = new log();
+        $log->user_id = $user->id;
+        $log->ip_address = $request->ip();
+        $log->save();
+
+        if ($request->app == 1) {
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'user' => $user
+            ]);
+        } else {
+            return response([
+                'status' => 'success'
+            ])->header('Authorization', $token);
         }
 
     }
@@ -151,9 +175,10 @@ class AuthController extends Controller
     public function logout()
     {
         JWTAuth::invalidate();
-        return response([
-            'status' => 'success',
-            'msg' => 'Logged out Successfully.'
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logged out Successfully.',
         ], 200);
     }
 }
