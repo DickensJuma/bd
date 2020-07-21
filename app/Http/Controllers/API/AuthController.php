@@ -24,43 +24,69 @@ class AuthController extends Controller
 
     public function createRiderAccount(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|string',
-            'phone' => 'required|phone:KE|min:10|unique:users',
-            'type' => 'required|string|in:rider',
-            'password' => 'required|string|min:8|same:password_confirmation',
-            'password_confirmation' => 'required|string|min:8',
-            'id_number' => 'required|string',
-            'vehicle_type' => 'required|string',
-        ]);
+        if ($request->app == 1) {
+            $phoneExists = User::where('phone', $request->phone)->count();
+            $idNumberExists = Rider::where('id_no', $request->id_number)->count();
 
-        $code = random_int(100000, 999999);
+            if ($phoneExists > 0){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Phone number exists',
+                ], 401);
+            }
 
-        \DB::transaction(function () use ($request, $code) {
-            $user = new User();
-            $user->name = $request->name;
-            $user->phone = $request->phone;
-            $user->role = $request->type;
-            $user->verification_code = $code;
-            $user->password = bcrypt($request->password);
-            $user->save();
+            if ($idNumberExists > 0){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'The ID number exists',
+                ], 401);
+            }
 
-            $rider = new Rider();
-            $rider->id_no = $request->id_number;
-            $rider->vehicle_type = $request->vehicle_type;
-            $rider->user_id = $user->id;
-            $rider->save();
-        });
+            $this->validate($request, [
+                'name' => 'required|string',
+                'phone' => 'required|phone:KE|min:10|unique:users',
+                'type' => 'required|string|in:rider',
+                'password' => 'required|string|min:8|same:password_confirmation',
+                'password_confirmation' => 'required|string|min:8',
+                'id_number' => 'required|string',
+                'vehicle_type' => 'required|string',
+            ]);
 
-        if ($this->sendPhoneVerificationCode($request->phone, $code)){
+            $code = random_int(100000, 999999);
+
+            \DB::transaction(function () use ($request, $code) {
+                $user = new User();
+                $user->name = $request->name;
+                $user->phone = $request->phone;
+                $user->role = $request->type;
+                $user->verification_code = $code;
+                $user->password = bcrypt($request->password);
+                $user->save();
+
+                $rider = new Rider();
+                $rider->id_no = $request->id_number;
+                $rider->vehicle_type = $request->vehicle_type;
+                $rider->user_id = $user->id;
+                $rider->save();
+            });
+
+            if ($this->sendPhoneVerificationCode(substr($request->phone, 1), $code)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Account created successfully',
+                ], 200);
+            }
+
             return response()->json([
-                'status' => 'success',
-            ], 200);
+                'success' => false,
+                'message' => 'Verification code not sent',
+            ], 401);
         }
 
         return response()->json([
-            'status' => 'error',
-        ], 400);
+            'success' => false,
+            'message' => 'Unauthorised',
+        ], 403);
     }
 
     public function register(Request $request)
