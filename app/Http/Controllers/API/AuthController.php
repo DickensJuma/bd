@@ -28,14 +28,14 @@ class AuthController extends Controller
             $phoneExists = User::where('phone', $request->phone)->count();
             $idNumberExists = Rider::where('id_no', $request->id_number)->count();
 
-            if ($phoneExists > 0){
+            if ($phoneExists > 0) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Phone number exists',
                 ], 401);
             }
 
-            if ($idNumberExists > 0){
+            if ($idNumberExists > 0) {
                 return response()->json([
                     'success' => false,
                     'message' => 'The ID number exists',
@@ -81,6 +81,35 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Verification code not sent',
             ], 401);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorised',
+        ], 403);
+    }
+
+    public function verifyRiderPhone(Request $request)
+    {
+        if ($request->app == 1) {
+            $this->validate($request, [
+                'phone' => 'required|phone:KE|min:10',
+                'code' => 'required|string',
+            ]);
+
+            $user = User::where('phone', $request->phone)->firstOrFail();
+
+            if ($user->verification_code == $request->code) {
+                return $user->markPhoneAsVerified
+                    ? response()->json([
+                        'success' => true,
+                        'message' => 'Phone successfully verified',
+                    ], 403)
+                    : response()->json([
+                        'success' => false,
+                        'message' => 'Could not verify account',
+                    ], 400);
+            }
         }
 
         return response()->json([
@@ -163,7 +192,11 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        $details = $request->only('email', 'password');
+        if ($request->app == 1) {
+            $details = $request->only('phone', 'password');
+        } else {
+            $details = $request->only('email', 'password');
+        }
 
         if (!$token = JWTAuth::attempt($details)) {
             if ($request->app == 1) {
