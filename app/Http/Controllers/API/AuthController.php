@@ -99,19 +99,29 @@ class AuthController extends Controller
 
             $user = User::where('phone', $request->phone)->firstOrFail();
 
-            if ($user->verification_code == $request->code) {
-                return $user->markPhoneAsVerified
+            if ($user->hasVerifiedPhone()){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Phone already verified',
+                ], 400);
+            }
+
+            if ($user['verification_code'] == $request->code) {
+                return $user->markPhoneAsVerified()
                     ? response()->json([
                         'success' => true,
                         'message' => 'Phone successfully verified',
-                    ], 403)
+                    ], 200)
                     : response()->json([
                         'success' => false,
-                        'message' => 'Could not verify account',
+                        'message' => 'Could not verify phone',
                     ], 400);
             }
+            return response()->json([
+                'success' => false,
+                'message' => 'Verification code invalid',
+            ], 400);
         }
-
         return response()->json([
             'success' => false,
             'message' => 'Unauthorised',
