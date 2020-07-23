@@ -99,7 +99,7 @@ class AuthController extends Controller
 
             $user = User::where('phone', $request->phone)->firstOrFail();
 
-            if ($user->hasVerifiedPhone()){
+            if ($user->hasVerifiedPhone()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Phone already verified',
@@ -128,6 +128,42 @@ class AuthController extends Controller
         ], 403);
     }
 
+    public function loginRider(Request $request)
+    {
+        if ($request->app == 1) {
+            $this->validate($request, [
+                'phone' => 'required|phone:KE|min:10',
+                'password' => 'required|string|min:8',
+            ]);
+
+            $details = $request->only('phone', 'password');
+
+            if (!$token = JWTAuth::attempt($details)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid Email or Password',
+                ], 401);
+            }
+
+            $user = User::where('phone', $request->phone)->with('ride')->firstOrFail();
+            $log = new log();
+            $log->user_id = $user->id;
+            $log->ip_address = $request->ip();
+            $log->save();
+
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'user' => $user
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorised',
+        ], 403);
+    }
+
     public function register(Request $request)
     {
         $this->validate($request, [
@@ -144,14 +180,6 @@ class AuthController extends Controller
         if ($request->type == 'wholesaler' || $request->type == 'retailer') {
             $this->validate($request, [
                 'shop_name' => 'required|string',
-            ]);
-        }
-
-        if ($request->type == 'rider') {
-            $this->validate($request, [
-                'operation_area' => 'required|string',
-                'id_number' => 'required|string',
-                'vehicle_type' => 'required|string',
             ]);
         }
 
@@ -176,15 +204,6 @@ class AuthController extends Controller
             $wholesaler->save();
         }
 
-        if ($request->type == 'rider') {
-            $rider = new Rider();
-            $rider->id_no = $request->id_number;
-            $rider->area_of_operation = $request->operation_area;
-            $rider->vehicle_type = $request->vehicle_type;
-            $rider->user_id = $user->id;
-            $rider->save();
-        }
-
         $data = $request->only(['name', 'email', 'type', 'shop_name', 'location_name', 'phone', 'county']);
         $admins = User::where('role', 'admin')->get(['email']);
         Mail::to('support@transmall.co.ke')->bcc($admins)->queue(new NewUser($data));
@@ -202,11 +221,8 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        if ($request->app == 1) {
-            $details = $request->only('phone', 'password');
-        } else {
-            $details = $request->only('email', 'password');
-        }
+
+        $details = $request->only('email', 'password');
 
         if (!$token = JWTAuth::attempt($details)) {
             if ($request->app == 1) {
