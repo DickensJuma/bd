@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\VasSms\Vas;
 use App\Http\Controllers\Controller;
 use App\Jobs\NewUserNotify;
 use App\log;
 use App\Mail\NewUser;
+use App\ResetPassword;
 use App\Rider;
 use App\Traits\SendPhoneVerificationCodeTrait;
 use App\User;
@@ -156,6 +158,49 @@ class AuthController extends Controller
                 'token' => $token,
                 'user' => $user
             ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorised',
+        ], 403);
+    }
+
+    public function resetPasswordRider(Request $request)
+    {
+        if ($request->app == 1) {
+            $this->validate($request, [
+                'phone' => 'required|phone:KE|min:10',
+            ]);
+
+            if ($user = User::where('phone', $request->phone)->firstOrFail()) {
+                $code = random_int(100000, 999999);
+
+                $reset = new ResetPassword();
+                $reset->code = $code;
+                $reset->phone = $request->phone;
+                $reset->save();
+
+                $urlToResetForm = env('FRONT_APP') . "/auth/reset_password/" . $code . '?phone=' . $request->phone;
+                $message = 'Hey! Your password reset link is ' . $urlToResetForm . '. This password reset link will expire'
+                    . ' in ' . config('auth.passwords.users.expire') . ' minutes';
+                if (Vas::send_sms($request->phone, $message)) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Reset link was sent to your phone',
+                    ], 200);
+                }
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Could not send password reset link',
+                ], 400);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 404);
         }
 
         return response()->json([

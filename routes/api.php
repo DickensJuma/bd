@@ -25,6 +25,7 @@ Route::prefix('v1')->group(function () {
     Route::post('auth/createRider', 'API\AuthController@createRiderAccount');
     Route::post('auth/verify_phone', 'API\AuthController@verifyRiderPhone');
     Route::post('auth/loginRider', 'API\AuthController@loginRider');
+    Route::post('auth/resetPasswordRider', 'API\AuthController@resetPasswordRider');
 
     Route::get('subcat_brands/{id}', 'API\ProductController@get_subcategory_brands');
     Route::get('/email/resend/{email}', 'API\VerificationController@resend')->name('verification.resend');
