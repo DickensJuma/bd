@@ -153,8 +153,17 @@ class AuthController extends Controller
             $log->ip_address = $request->ip();
             $log->save();
 
+            if (!$user->hasVerifiedPhone()){
+                $code = random_int(100000, 999999);
+                $user->verification_code = $code;
+                $user->update();
+
+                $this->sendPhoneVerificationCode(substr($request->phone, 1), $code);
+            }
+
             return response()->json([
                 'success' => true,
+                'verified' => $user->hasVerifiedPhone() ? true : false,
                 'token' => $token,
                 'user' => $user
             ]);
