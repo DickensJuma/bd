@@ -51,6 +51,7 @@ Route::prefix('v1')->group(function () {
         Route::post('filter-products', 'API\ProductController@filterProducts');
 
         Route::group(['middleware' => 'jwt.auth'], function () {
+            Route::post('new_coordinates', 'API\LocationTrackingController@CreateLocation');
             Route::post('apply-coupon', 'API\CouponsController@applyCoupon');
             Route::post('order', 'API\OrdersController@store');
             Route::get('order', 'API\OrdersController@show');
