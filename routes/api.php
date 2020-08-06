@@ -27,6 +27,20 @@ Route::prefix('v1')->group(function () {
     Route::post('auth/loginRider', 'API\AuthController@loginRider');
     Route::post('auth/resetPasswordRider', 'API\AuthController@resetPasswordRider');
 
+    Route::group(['middleware' => 'jwt.auth'], function () {
+        Route::get('auth/user', 'API\AuthController@user');
+        Route::post('auth/logout', 'API\AuthController@logout');
+        Route::post('new_coordinates', 'API\LocationTrackingController@CreateLocation');
+        Route::get('categories_sub_brands', 'API\ProductCategoryController@categoriesSubCategoriesBrands');
+    });
+
+
+
+
+
+
+
+
     Route::get('subcat_brands/{id}', 'API\ProductController@get_subcategory_brands');
     Route::get('/email/resend/{email}', 'API\VerificationController@resend')->name('verification.resend');
     Route::post('auth/emailCheck', 'API\UserController@checkEmail');
@@ -58,15 +72,6 @@ Route::prefix('v1')->group(function () {
             Route::patch('cancel-order/{id}', 'API\OrdersController@cancelOrder');
             Route::post('pay/{id}', 'API\OrdersController@makePayment');
         });
-    });
-
-
-
-    Route::group(['middleware' => 'jwt.auth'], function () {
-        Route::get('auth/user', 'API\AuthController@user');
-        Route::post('auth/logout', 'API\AuthController@logout');
-        Route::post('new_coordinates', 'API\LocationTrackingController@CreateLocation');
-
     });
 
     Route::group(['prefix' => 'admin'], function () {

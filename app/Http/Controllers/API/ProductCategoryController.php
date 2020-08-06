@@ -24,6 +24,10 @@ class ProductCategoryController extends Controller
         return ProductCategory::get()->random(5);
     }
 
+    public function categoriesSubCategoriesBrands(){
+        return ProductCategory::orderBy('name')->with(['subCategory', 'subCategory.brands'])->get();
+    }
+
     /**
      * Store a newly created resource in storage.
      *
