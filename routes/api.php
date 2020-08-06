@@ -31,7 +31,6 @@ Route::prefix('v1')->group(function () {
         Route::get('auth/user', 'API\AuthController@user');
         Route::post('auth/logout', 'API\AuthController@logout');
         Route::post('new_coordinates', 'API\LocationTrackingController@CreateLocation');
-        Route::get('categories_sub_brands', 'API\ProductCategoryController@categoriesSubCategoriesBrands');
     });
 
 
@@ -60,6 +59,7 @@ Route::prefix('v1')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
         Route::get('sub-categories/{id}', 'API\ShopController@getSubCategories');
+        Route::get('categories_sub_brands', 'API\ProductCategoryController@categoriesSubCategoriesBrands');
         Route::get('details/{id}', 'API\ShopController@show');
         Route::post('search-products', 'API\ShopController@searchProducts');
         Route::post('filter-products', 'API\ProductController@filterProducts');
