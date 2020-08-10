@@ -37,9 +37,9 @@ class OrdersController extends Controller
     public function MyOrders()
     {
 
-        $orders = orderItem::latest()->with(array("product" => function ($q) {
+        $orders = Shipment::latest()->with(array("orderItems.product" => function ($q) {
             $q->where('user_id', auth()->user()->id);
-        }))->get();
+        }))->with(['order.customer', 'orderItems.product.files'])->get();
 
         return $orders;
     }
