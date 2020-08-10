@@ -17,10 +17,13 @@ class CreateOrderItemsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('shipment_id');
             $table->timestamps();
             $table->foreign('order_id')->references('id')->on('orders')
                 ->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')
+                ->onDelete('cascade');
+            $table->foreign('shipment_id')->references('id')->on('shipments')
                 ->onDelete('cascade');
             $table->integer('quantity');
         });

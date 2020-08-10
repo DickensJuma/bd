@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\order;
 use App\orderItem;
 use App\Product;
+use App\Shipment;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -65,7 +66,7 @@ class OrdersController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -98,13 +99,27 @@ class OrdersController extends Controller
         $order->LocationName = $request->LocationName;
         $order->save();
 
-        foreach ($request->cart as $item) {
-            $orderItem = new orderItem();
-            $orderItem->order_id = $order->id;
-            $orderItem->product_id = $item['product']['id'];
-            $orderItem->quantity = $item['quantity'];
-            $orderItem->shipment_id = $order->id . $item['product']['user_id'];
-            $orderItem->save();
+        $sellers_ids = collect($request->cart)->pluck("product.user_id");
+        $shops = array_unique($sellers_ids->toArray());
+
+        foreach ($shops as $id) {
+            $shipmentNo = substr(md5(time() . $id), 0, 10);
+            $shipment = new Shipment();
+            $shipment->order_id = $order->id;
+            $shipment->shipmentId = strtoupper($shipmentNo);
+            $shipment->status = 'placed';
+            $shipment->save();
+
+            foreach ($request->cart as $item) {
+                if ($item['product']['user_id'] == $id){
+                    $orderItem = new orderItem();
+                    $orderItem->order_id = $order->id;
+                    $orderItem->product_id = $item['product']['id'];
+                    $orderItem->quantity = $item['quantity'];
+                    $orderItem->shipment_id = $shipment->id;
+                    $orderItem->save();
+                }
+            }
         }
         // Pay
         $phoneNo = '254' . substr($request->phone, -9);
