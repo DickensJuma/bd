@@ -33,6 +33,10 @@ class NewShipping
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('messages.' . $this->shipment->to);
+        return new PrivateChannel('shipment.' . $this->shipment->seller_id);
+    }
+
+    public function broadcastWith(){
+        return ['shipment' => $this->shipment];
     }
 }

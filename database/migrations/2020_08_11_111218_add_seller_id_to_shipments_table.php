@@ -16,7 +16,7 @@ class AddSellerIdToShipmentsTable extends Migration
         Schema::table('shipments', function (Blueprint $table) {
             $table->unsignedBigInteger('seller_id')->after('status');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('seller_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

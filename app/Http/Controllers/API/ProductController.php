@@ -31,10 +31,11 @@ class ProductController extends Controller
             $query->select('id', 'name');
         }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status', 'disabled']);
     }
+
     public function suplier()
     {
         $user_id = auth()->user()->id;
-        return Product::where('user_id',$user_id)->latest()->with(array('category' => function ($query) {
+        return Product::where('user_id', $user_id)->latest()->with(array('category' => function ($query) {
             $query->select('id', 'name');
         }))->with(array('brand' => function ($query) {
             $query->select('id', 'name');
@@ -78,38 +79,41 @@ class ProductController extends Controller
             'description' => 'required',
         ]);
 
-        $product = new Product();
-        $product->quantity = $request->quantity;
-        $product->uniqueId = time();
-        $product->category_id = $request->category;
-        $product->sub_category_id = $request->subcategory;
-        $product->brand_id = $request->brand;
-        $product->user_id = $request->shop;
-        $product->title = $request->title;
-        $product->price = $request->price;
-        $product->description = $request->description;
-        $product->save();
+        \DB::transaction(function () use ($request) {
+            $product = new Product();
+            $product->quantity = $request->quantity;
+            $product->uniqueId = time();
+            $product->category_id = $request->category;
+            $product->sub_category_id = $request->subcategory;
+            $product->brand_id = $request->brand;
+            $product->user_id = $request->shop;
+            $product->title = $request->title;
+            $product->price = $request->price;
+            $product->description = $request->description;
+            $product->save();
 
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $uploadedFile) {
-                $ext = $uploadedFile->getClientOriginalExtension();
-                if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $uploadedFile) {
+                    $ext = $uploadedFile->getClientOriginalExtension();
+                    if (in_array($ext, ['jpg', 'png', 'jpeg'])) {
 //                    $filename = $uploadedFile->storeAs('public/uploads', time() . $uploadedFile->getClientOriginalName());
-                    $filename = time() . $uploadedFile->getClientOriginalName();
-                    $img = \Image::make($uploadedFile)->resize(360, 360, function ($constraint) {
-                        $constraint->aspectRatio();
-                    })->save(public_path('storage/uploads/') . $filename);
-                    \Image::make($uploadedFile)->resize(600, 600, function ($constraint) {
-                        $constraint->aspectRatio();
-                    })->save(public_path('/storage/uploads/large/') . $filename);
-                    $image = new ProductImage();
-                    $image->product_id = $product['id'];
-                    $image->height = $img->height();
-                    $image->path = $filename;
-                    $image->save();
+                        $filename = time() . $uploadedFile->getClientOriginalName();
+                        $img = \Image::make($uploadedFile)->resize(360, 360, function ($constraint) {
+                            $constraint->aspectRatio();
+                        })->save(public_path('storage/uploads/') . $filename);
+                        \Image::make($uploadedFile)->resize(600, 600, function ($constraint) {
+                            $constraint->aspectRatio();
+                        })->save(public_path('/storage/uploads/large/') . $filename);
+                        $image = new ProductImage();
+                        $image->product_id = $product['id'];
+                        $image->height = $img->height();
+                        $image->path = $filename;
+                        $image->save();
+                    }
                 }
             }
-        }
+
+        });
     }
 
 
@@ -159,6 +163,7 @@ class ProductController extends Controller
             }
         }
     }
+
     public function changeStatus(Request $request, $id)
     {
         $product = Product::where('uniqueId', $id)->firstOrFail();
@@ -276,23 +281,27 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function get_subcategory_brands($id){
-        return Brand::whereHas('subcategory', function ($query) use ($id){
+    public function get_subcategory_brands($id)
+    {
+        return Brand::whereHas('subcategory', function ($query) use ($id) {
             $query->where('product_category_id', $id);
         })->get();
     }
 
-    public function filterProducts(Request $request){
+    public function filterProducts(Request $request)
+    {
         return Product::filter($request->all())->with('brand')->with('files')->get();
     }
 
-    public function featuredProducts(){
-        return Product::orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query){
+    public function featuredProducts()
+    {
+        return Product::orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query) {
             $query->where('verification', 'verified');
         })->where('status', 1)->where('disabled', 'enabled')->with('brand')->with('files')->with('category')->get()->random(6);
     }
 
-    public function isVisited(Request $request){
+    public function isVisited(Request $request)
+    {
         $product = Product::where('uniqueId', $request->product_id)->firstOrFail();
         $product->visitors += 1;
         $product->update();

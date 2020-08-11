@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Coupon;
+use App\Events\NewShipping;
 use App\Helpers\Payment\Mpesa;
 use App\Http\Controllers\Controller;
 use App\order;
@@ -110,6 +111,8 @@ class OrdersController extends Controller
                 $shipment->seller_id = $id;
                 $shipment->save();
                 $total = 0;
+
+                broadcast(new NewShipping($shipment));
 
                 foreach ($request->cart as $item) {
                     if ($item['product']['user_id'] == $id) {
