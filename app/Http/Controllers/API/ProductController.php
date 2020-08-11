@@ -98,10 +98,10 @@ class ProductController extends Controller
                     $filename = time() . $uploadedFile->getClientOriginalName();
                     $img = \Image::make($uploadedFile)->resize(360, 360, function ($constraint) {
                         $constraint->aspectRatio();
-                    })->save(storage_path('storage/uploads/') . $filename);
+                    })->save(storage_path('uploads/') . $filename);
                     \Image::make($uploadedFile)->resize(600, 600, function ($constraint) {
                         $constraint->aspectRatio();
-                    })->save(storage_path('/storage/uploads/large/') . $filename);
+                    })->save(storage_path('uploads/large/') . $filename);
                     $image = new ProductImage();
                     $image->product_id = $product['id'];
                     $image->height = $img->height();
@@ -146,10 +146,10 @@ class ProductController extends Controller
                     $filename = time() . $uploadedFile->getClientOriginalName();
                     $img = \Image::make($uploadedFile)->resize(360, 360, function ($constraint) {
                         $constraint->aspectRatio();
-                    })->save(storage_path('storage/uploads/') . $filename);
+                    })->save(storage_path('/uploads/') . $filename);
                     \Image::make($uploadedFile)->resize(600, 600, function ($constraint) {
                         $constraint->aspectRatio();
-                    })->save(storage_path('/storage/uploads/large/') . $filename);
+                    })->save(storage_path('/uploads/large/') . $filename);
                     $image = new ProductImage();
                     $image->product_id = $product['id'];
                     $image->height = $img->height();
@@ -223,7 +223,7 @@ class ProductController extends Controller
                     })->save(storage_path('uploads/') . $filename);
                     //large
                     \Image::make($uploadedFile)->resize(600, 600, function ($constraint) {
-                    })->save(storage_path('storage/uploads/') . $filename);
+                    })->save(storage_path('uploads/') . $filename);
                     $image = new ProductImage();
                     $image->product_id = $product['id'];
                     $image->height = \Image::make($uploadedFile)->height();
