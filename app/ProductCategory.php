@@ -21,6 +21,6 @@ class ProductCategory extends Model
 
     public function getFilePathAttribute()
     {
-        return asset('img/products_category/' . $this->image);
+        return asset('storage/products_category/' . $this->image);
     }
 }

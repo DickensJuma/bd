@@ -50,7 +50,7 @@ class ProductCategoryController extends Controller
             if (in_array($ext, ['png', 'jpg', 'jpeg'])) {
                 $image = time() . '.' . explode('/', explode(':', substr($request->image, 0,
                         strpos($request->image, ';')))[1])[1];
-                \Image::make($request->image)->resize(500, 500)->save(public_path('img/products_category/') . $image);
+                \Image::make($request->image)->resize(500, 500)->save(public_path('storage/products_category/') . $image);
             } else {
                 $image = 'profile.png';
             }
@@ -79,7 +79,7 @@ class ProductCategoryController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
@@ -97,13 +97,13 @@ class ProductCategoryController extends Controller
             if (in_array($ext, ['png', 'jpg', 'jpeg'])) {
                 $image = time() . '.' . explode('/', explode(':', substr($request->image, 0,
                         strpos($request->image, ';')))[1])[1];
-                \Image::make($request->image)->resize(500, 500)->save(public_path('img/products_category/') . $image);
+                \Image::make($request->image)->resize(500, 500)->save(public_path('storage/products_category/') . $image);
                 $category->image = $image;
             }
         }
         $category->update();
 
-        return response([
+        return response()->json([
             'status' => 'success'
         ], 200);
     }
