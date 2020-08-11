@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddVerificationToRidersTable extends Migration
+class AddSlugToProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddVerificationToRidersTable extends Migration
      */
     public function up()
     {
-        Schema::table('riders', function (Blueprint $table) {
-            $table->string('verification')->default('unverified')->after('user_id');
+        Schema::table('products', function (Blueprint $table) {
+            $table->string('slug')->unique()->after('title');
         });
     }
 
@@ -25,7 +25,7 @@ class AddVerificationToRidersTable extends Migration
      */
     public function down()
     {
-        Schema::table('riders', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table) {
             //
         });
     }

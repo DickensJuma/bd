@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRidersTable extends Migration
+class CreateLocationTrackingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,15 @@ class CreateRidersTable extends Migration
      */
     public function up()
     {
-        Schema::create('riders', function (Blueprint $table) {
+        Schema::create('location_trackings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('id_no');
-            $table->string('vehicle_type');
-            $table->string('verification')->default('unverified');
+            $table->decimal('longitude', 11,8)->nullable();
+            $table->decimal('latitude',10,8)->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade');
-
         });
     }
 
@@ -34,6 +32,6 @@ class CreateRidersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('riders');
+        Schema::dropIfExists('location_trackings');
     }
 }

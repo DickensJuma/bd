@@ -19,9 +19,28 @@ Route::prefix('v1')->group(function () {
         Route::get('auth/refresh', 'API\AuthController@refresh');
     });
 
-    Route::get('subcat_brands/{id}', 'API\ProductController@get_subcategory_brands');
+    //auth routes
     Route::post('auth/register', 'API\AuthController@register');
     Route::post('auth/login', 'API\AuthController@login');
+    Route::post('auth/createRider', 'API\AuthController@createRiderAccount');
+    Route::post('auth/verify_phone', 'API\AuthController@verifyRiderPhone');
+    Route::post('auth/loginRider', 'API\AuthController@loginRider');
+    Route::post('auth/resetPasswordRider', 'API\AuthController@resetPasswordRider');
+
+    Route::group(['middleware' => 'jwt.auth'], function () {
+        Route::get('auth/user', 'API\AuthController@user');
+        Route::post('auth/logout', 'API\AuthController@logout');
+        Route::post('new_coordinates', 'API\LocationTrackingController@CreateLocation');
+    });
+
+
+
+
+
+
+
+
+    Route::get('subcat_brands/{id}', 'API\ProductController@get_subcategory_brands');
     Route::get('/email/resend/{email}', 'API\VerificationController@resend')->name('verification.resend');
     Route::post('auth/emailCheck', 'API\UserController@checkEmail');
     Route::post('password/email', 'API\ForgotPasswordController@sendResetLinkEmail');
@@ -40,6 +59,7 @@ Route::prefix('v1')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
         Route::get('sub-categories/{id}', 'API\ShopController@getSubCategories');
+        Route::get('categories_sub_brands', 'API\ProductCategoryController@categoriesSubCategoriesBrands');
         Route::get('details/{id}', 'API\ShopController@show');
         Route::post('search-products', 'API\ShopController@searchProducts');
         Route::post('filter-products', 'API\ProductController@filterProducts');
@@ -52,14 +72,6 @@ Route::prefix('v1')->group(function () {
             Route::patch('cancel-order/{id}', 'API\OrdersController@cancelOrder');
             Route::post('pay/{id}', 'API\OrdersController@makePayment');
         });
-    });
-
-
-
-    Route::group(['middleware' => 'jwt.auth'], function () {
-        Route::get('auth/user', 'API\AuthController@user');
-        Route::post('auth/logout', 'API\AuthController@logout');
-
     });
 
     Route::group(['prefix' => 'admin'], function () {

@@ -4,10 +4,20 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use EloquentFilter\Filterable;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Product extends Model
 {
-    use Filterable;
+    use Filterable, Sluggable;
+
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
 
     public function brand(){
         return $this->belongsTo(Brand::class, 'brand_id');
