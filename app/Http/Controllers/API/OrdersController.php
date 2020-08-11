@@ -112,8 +112,6 @@ class OrdersController extends Controller
                 $shipment->save();
                 $total = 0;
 
-                broadcast(new NewShipping($shipment));
-
                 foreach ($request->cart as $item) {
                     if ($item['product']['user_id'] == $id) {
                         $orderItem = new orderItem();
@@ -128,6 +126,7 @@ class OrdersController extends Controller
                 }
                 $shipment->total = $total;
                 $shipment->update();
+                broadcast(new NewShipping($shipment));
             }
         });
         // Pay
