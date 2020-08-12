@@ -13,10 +13,7 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.User.{id}', function ($user, $id) {
+Broadcast::channel('shipment.{id}', function ($user, $id) {
+    dd($user->id);
     return (int) $user->id === (int) $id;
-});
-
-Broadcast::channel('backoffice-activity', function () {
-    return Auth::check();
 });

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Coupon;
+use App\Events\NewShipping;
 use App\Helpers\Payment\Mpesa;
 use App\Http\Controllers\Controller;
 use App\order;
 use App\orderItem;
 use App\Product;
+use App\Shipment;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -36,11 +38,9 @@ class OrdersController extends Controller
     public function MyOrders()
     {
 
-        $orders = orderItem::latest()->with(array("product" => function ($q) {
+        return Shipment::latest()->with(array("orderItems.product" => function ($q) {
             $q->where('user_id', auth()->user()->id);
-        }))->get();
-
-        return $orders;
+        }))->with(['order.customer', 'orderItems.product.files'])->get();
     }
 
     public function orderDetail($id)
@@ -65,7 +65,7 @@ class OrdersController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -74,45 +74,68 @@ class OrdersController extends Controller
             'phone' => 'required|phone:KE|min:10',
             'cart' => 'required'
         ]);
-        $order = new order();
-        if ($request->coupon_unique_id) {
-            $coupon = Coupon::where('unique_id', $request->coupon_unique_id)->firstOrFail();
-            $order->coupon_id = $coupon['id'];
-            $discount = $coupon->discount($request->total_price);
-            $order->discount = $discount;
-            $order->sub_total = $request->total_price - $discount;
-        }
+        \DB::transaction(function () use ($request) {
+            $order = new order();
+            if ($request->coupon_unique_id) {
+                $coupon = Coupon::where('unique_id', $request->coupon_unique_id)->firstOrFail();
+                $order->coupon_id = $coupon['id'];
+                $discount = $coupon->discount($request->total_price);
+                $order->discount = $discount;
+                $order->sub_total = $request->total_price - $discount;
+            }
 
-        $order->deliver = $request->deliver;
-        $order->customer_id = Auth::user()->id;
-        $order->orderNo = Auth::user()->id . time();
-        $order->total_price = $request->total_price;
-        if (!$request->coupon_unique_id) {
-            $order->sub_total = $request->total_price;
-        }
-        $order->phone = $request->phone;
-        $order->county = $request->county;
-        $order->longitude = $request->longitude;
-        $order->latitude = $request->latitude;
-        $order->address = $request->address;
-        $order->LocationName = $request->LocationName;
-        $order->save();
+            $order->deliver = $request->deliver;
+            $order->customer_id = Auth::user()->id;
+            $order->orderNo = Auth::user()->id . time();
+            $order->total_price = $request->total_price;
+            if (!$request->coupon_unique_id) {
+                $order->sub_total = $request->total_price;
+            }
+            $order->phone = $request->phone;
+            $order->county = $request->county;
+            $order->longitude = $request->longitude;
+            $order->latitude = $request->latitude;
+            $order->address = $request->address;
+            $order->LocationName = $request->LocationName;
+            $order->save();
 
-        foreach ($request->cart as $item) {
-            $orderItem = new orderItem();
-            $orderItem->order_id = $order->id;
-            $orderItem->product_id = $item['product']['id'];
-            $orderItem->quantity = $item['quantity'];
-            $orderItem->shipment_id = $order->id . $item['product']['user_id'];
-            $orderItem->save();
-        }
+            $sellers_ids = collect($request->cart)->pluck("product.user_id");
+            $shops = array_unique($sellers_ids->toArray());
+
+            foreach ($shops as $id) {
+                $shipmentNo = substr(md5(time() . $id), 0, 10);
+                $shipment = new Shipment();
+                $shipment->order_id = $order->id;
+                $shipment->shipmentId = strtoupper($shipmentNo);
+                $shipment->status = 'placed';
+                $shipment->seller_id = $id;
+                $shipment->save();
+                $total = 0;
+
+                foreach ($request->cart as $item) {
+                    if ($item['product']['user_id'] == $id) {
+                        $orderItem = new orderItem();
+                        $orderItem->order_id = $order->id;
+                        $orderItem->product_id = $item['product']['id'];
+                        $orderItem->quantity = $item['quantity'];
+                        $orderItem->shipment_id = $shipment->id;
+                        $orderItem->price = $item['product']['price'];
+                        $orderItem->save();
+                        $total += $item['product']['price'];
+                    }
+                }
+                $shipment->total = $total;
+                $shipment->update();
+                broadcast(new NewShipping($shipment));
+            }
+        });
         // Pay
-        $phoneNo = '254' . substr($request->phone, -9);
-        $trans_id = $order->orderNo; // unique id
-        $customer_id = $order->customer_id; // user id
-        $amount = (int)$order->sub_total; //  amount to pay. Must be int
-        $service_id = '1'; // type of service e.g 1- advertisement, 2- booking
-        Mpesa::stk_push($trans_id, $customer_id, $phoneNo, $amount, $service_id);
+//        $phoneNo = '254' . substr($request->phone, -9);
+//        $trans_id = $order->orderNo; // unique id
+//        $customer_id = $order->customer_id; // user id
+//        $amount = (int)$order->sub_total; //  amount to pay. Must be int
+//        $service_id = '1'; // type of service e.g 1- advertisement, 2- booking
+//        Mpesa::stk_push($trans_id, $customer_id, $phoneNo, $amount, $service_id);
 
         return response()->json([
             "message" => "success"
