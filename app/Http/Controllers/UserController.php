@@ -196,11 +196,11 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         if ($request->verification == 'verified'){
-            Mail::to($user)->queue(new AccountVerified($user));
+            Mail::to($user->email)->queue(new AccountVerified($user));
         }
 
         if ($request->verification == 'unverified'){
-            Mail::to($user)->queue(new AccountUnverified($user));
+            Mail::to($user->email)->queue(new AccountUnverified($user));
         }
 
         if ($user->role == 'wholesaler' || $user->role == 'retailer'){
