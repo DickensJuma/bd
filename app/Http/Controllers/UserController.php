@@ -195,33 +195,29 @@ class UserController extends Controller
 
         $user = User::findOrFail($id);
 
-        if ($request->verification == 'verified'){
-            Mail::to($user)->queue(new AccountVerified($user));
-        }
-
-        if ($request->verification == 'unverified'){
-            Mail::to($user)->queue(new AccountUnverified($user));
-        }
-
         if ($user->role == 'wholesaler' || $user->role == 'retailer'){
             $shop = WholesalerRetailer::where('user_id', $id)->firstOrFail();
             $shop->verification = $request->verification;
             $shop->update();
 
-            return response()->json([
-                'status' => 'success'
-            ], 200);
+            if ($request->verification == 'verified'){
+                Mail::to($user->email)->queue(new AccountVerified($user));
+            }
+
+            if ($request->verification == 'unverified'){
+                Mail::to($user->email)->queue(new AccountUnverified($user));
+            }
         }
 
         if ($user->role == 'rider'){
             $rider = Rider::where('user_id', $id)->firstOrFail();
             $rider->verification = $request->verification;
             $rider->update();
-
-            return response()->json([
-                'status' => 'success'
-            ], 200);
         }
+
+        return response()->json([
+            'status' => 'success'
+        ], 200);
     }
 
     public function userUpdate(Request $request, $id)

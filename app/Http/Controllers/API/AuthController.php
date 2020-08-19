@@ -258,9 +258,9 @@ class AuthController extends Controller
             $wholesaler->save();
         }
 
-        $data = $request->only(['name', 'email', 'type', 'shop_name', 'location_name', 'phone', 'county']);
-        $admins = User::where('role', 'admin')->get(['email']);
-        Mail::to('support@transmall.co.ke')->bcc($admins)->queue(new NewUser($data));
+//        $data = $request->only(['name', 'email', 'type', 'shop_name', 'location_name', 'phone', 'county']);
+//        $admins = User::where('role', 'admin')->get(['email']);
+//        Mail::to('support@transmall.co.ke')->bcc($admins)->queue(new NewUser($data));
 
         return response()->json([
             'status' => 'success',

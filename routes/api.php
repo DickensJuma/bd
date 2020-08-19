@@ -147,6 +147,8 @@ Route::prefix('v1')->group(function () {
                 Route::get('myOrders', 'API\OrdersController@MyOrders');
                 Route::get('order-details/{id}', 'API\OrdersController@orderDetail');
                 Route::get('showOrderDetails/{id}', 'API\OrdersController@showOrderDetails');
+                Route::get('verified_riders', 'API\BroadcastController@getRiders');
+                Route::post('dial_a_rider/{id}', 'API\BroadcastController@dialARider');
             });
         });
     });

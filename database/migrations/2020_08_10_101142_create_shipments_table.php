@@ -19,10 +19,17 @@ class CreateShipmentsTable extends Migration
             $table->unsignedBigInteger('rider_id')->nullable();
             $table->string('status')->nullable();
             $table->string('shipmentId')->unique();
+            $table->decimal('deliveryFee', 20, 2);
+            $table->decimal('total', 20, 2)->nullable();
+            $table->unsignedBigInteger('seller_id');
+            $table->unsignedBigInteger('dialed_rider_id')->nullable();
+            $table->unsignedInteger('dialed_to_nearby_riders')->default(0);
             $table->timestamps();
 
             $table->foreign('rider_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            $table->foreign('seller_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('dialed_rider_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
