@@ -94,8 +94,5 @@ class User extends Authenticatable implements JwtSubject
             'phone_verified_at' => $this->freshTimestamp(),
         ])->save();
     }
-    public function receivesBroadcastNotificationsOn()
-{
-    return 'shipment.User.' . $this->id;
-}
+    
 }
