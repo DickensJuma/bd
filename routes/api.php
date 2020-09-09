@@ -161,6 +161,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('rider-details/{id}', 'API\RiderController@riderDetail');
                 Route::post('user/{id}', 'API\UserController@update');
             });
+            Route::post('fcm-token', 'API\FcmController@saveToken');
         });
     });
 
