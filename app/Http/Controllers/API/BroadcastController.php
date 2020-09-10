@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Events\DialRider;
+use App\FcmToken;
+use App\Helpers\FCM\RiderNotification;
 use App\Http\Controllers\Controller;
 use App\Shipment;
 use App\User;
@@ -28,8 +30,14 @@ class BroadcastController extends Controller
 
         broadcast(new DialRider($shipping));
 
+        $rider = FcmToken::latest()->where('rider_id', $request->rider['id'])->first();
+        $message = 'Shipment ID: ' . $shipping->shipmentId;
+
+        $response = RiderNotification::send_notification($rider->token, $message, $shipping);
+
         return response()->json([
-            "message" => "success"
+            "message" => "success",
+            "data" => $response
         ], 200);
     }
 }

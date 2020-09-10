@@ -25,7 +25,6 @@ class Vas
           'Content-Type' => 'application/json'
       ])->post('https://vas.standardmedia.co.ke/api/sms2', $data);
 
-
           return $response;
   }
 }

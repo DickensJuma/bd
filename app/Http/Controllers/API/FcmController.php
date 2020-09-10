@@ -12,7 +12,7 @@ class FcmController extends Controller
     {
         if ($request->app == 1) {
             $token = new FcmToken();
-            $token->id = $request->userId;
+            $token->rider_id = $request->userId;
             $token->token = $request->token;
             $token->save();
 

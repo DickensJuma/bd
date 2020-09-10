@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Coupon;
 use App\Events\NewShipping;
+use App\FcmToken;
+use App\Helpers\FCM\RiderNotification;
 use App\Helpers\Payment\Mpesa;
 use App\Http\Controllers\Controller;
 use App\order;
