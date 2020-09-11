@@ -162,6 +162,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('user/{id}', 'API\UserController@update');
             });
             Route::post('fcm-token', 'API\FcmController@saveToken');
+            Route::get('available-shipment', 'API\ShipmentController@index');
         });
     });
 
