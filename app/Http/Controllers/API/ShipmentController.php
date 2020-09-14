@@ -38,11 +38,16 @@ class ShipmentController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        //
+        $shipment = Shipment::with(['order.items.product.files', 'order.customer'])->findOrFail($id);
+
+        return response()->json([
+            "message" => "success",
+            "data" => $shipment
+        ], 200);
     }
 
     /**

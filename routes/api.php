@@ -163,6 +163,7 @@ Route::prefix('v1')->group(function () {
             });
             Route::post('fcm-token', 'API\FcmController@saveToken');
             Route::get('available-shipment', 'API\ShipmentController@index');
+            Route::get('rider-shipment/{id}', 'API\ShipmentController@show');
         });
     });
 
