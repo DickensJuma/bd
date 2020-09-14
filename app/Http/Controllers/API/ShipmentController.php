@@ -45,7 +45,7 @@ class ShipmentController extends Controller
         $shipment = Shipment::with(['order.items.product.files', 'order.customer'])->findOrFail($id);
 
         return response()->json([
-            "message" => "success",
+            "success" => true,
             "data" => $shipment
         ], 200);
     }
