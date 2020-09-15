@@ -72,4 +72,14 @@ class ShipmentController extends Controller
     {
         //
     }
+
+    public function clearShipments()
+    {
+        $ships = Shipment::all();
+
+        $ships->map(function ($item, $key) {
+            $item->dialed_rider_id = null;
+            $item->update();
+        });
+    }
 }
