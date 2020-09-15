@@ -15,7 +15,7 @@ class ShipmentController extends Controller
      */
     public function index()
     {
-        $shipments =  Shipment::where('dialed_rider_id', auth()->user()->id)->whereNull('rider_id')->get();
+        $shipments =  Shipment::latest()->where('dialed_rider_id', auth()->user()->id)->whereNull('rider_id')->get();
 
         return response()->json([
             "message" => "success",
