@@ -69,6 +69,8 @@ Route::prefix('v1')->group(function () {
             Route::post('order', 'API\OrdersController@store');
             Route::get('order', 'API\OrdersController@show');
             Route::get('show-details/{id}', 'API\OrdersController@showDetails');
+            Route::get('showshipment/{id}', 'API\OrdersController@showShipment');
+            Route::post('comment/{id}', 'API\OrdersController@comment');
             Route::patch('cancel-order/{id}', 'API\OrdersController@cancelOrder');
             Route::post('pay/{id}', 'API\OrdersController@makePayment');
         });
@@ -161,6 +163,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('showShippingInfo/{id}', 'API\DeliveryController@shopInfo');
                 Route::get('rider-details/{id}', 'API\RiderController@riderDetail');
                 Route::post('user/{id}', 'API\UserController@update');
+                Route::post('documents', 'API\UserController@riderDocuments');
             });
         });
     });

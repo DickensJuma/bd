@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Comment;
 use App\Coupon;
 use App\Events\NewShipping;
 use App\Helpers\Payment\Mpesa;
@@ -181,7 +182,27 @@ class OrdersController extends Controller
         $id = Auth::user()->id;
         return response($order::latest()->where('customer_id', $id)->get());
     }
-
+    public function comment(Request $request,$id)
+    {
+        $this->validate($request,[
+           'orderNo' => 'required|integer',
+            'message'=>'required|string'
+        ]);
+        $comment = new Comment();
+        $comment ->orderNo = $request->orderNo;
+        $comment->shipmentId = $id;
+        $comment->userId = Auth::user()->id;
+        $comment->comment = $request->message;
+        $comment->save();
+        return response()->json([
+            "Message" => "Success"
+        ], 200);
+    }
+    public function showShipment($id)
+    {
+        $order_id = order::where('orderNo', $id)->value('id');
+        return orderItem::where('order_id', $order_id)->with("product")->with('deliveries')->with('product.files')->get()->groupBy('shipment_id');
+    }
 
     public function showDetails($id)
     {
