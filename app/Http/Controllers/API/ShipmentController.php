@@ -55,11 +55,26 @@ class ShipmentController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        $shipment = Shipment::findOrFail($id);
+
+        if (!is_null($shipment->rider_id)){
+            return response()->json([
+                'success' => false,
+                'message' => 'You are late! Ride already taken',
+            ], 403);
+        }
+
+        $shipment->rider_id = auth()->user()->id;
+        $shipment->status = 'in-transit';
+        $shipment->update();
+
+        return response()->json([
+            "success" => true,
+        ], 200);
     }
 
     /**
@@ -79,7 +94,12 @@ class ShipmentController extends Controller
 
         $ships->map(function ($item, $key) {
             $item->dialed_rider_id = null;
+            $item->status = 'new';
             $item->update();
         });
+
+        return response()->json([
+            "success" => true,
+        ], 200);
     }
 }

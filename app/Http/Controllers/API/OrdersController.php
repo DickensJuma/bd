@@ -109,7 +109,7 @@ class OrdersController extends Controller
                 $shipment = new Shipment();
                 $shipment->order_id = $order->id;
                 $shipment->shipmentId = strtoupper($shipmentNo);
-                $shipment->status = 'placed';
+                $shipment->status = 'new';
                 $shipment->seller_id = $id;
                 $shipment->deliveryFee = 100;
                 $shipment->save();
