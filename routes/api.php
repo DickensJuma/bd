@@ -26,6 +26,7 @@ Route::prefix('v1')->group(function () {
     Route::post('auth/verify_phone', 'API\AuthController@verifyRiderPhone');
     Route::post('auth/loginRider', 'API\AuthController@loginRider');
     Route::post('auth/resetPasswordRider', 'API\AuthController@resetPasswordRider');
+    Route::get('clear-shipment', 'API\ShipmentController@clearShipments');
 
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('auth/user', 'API\AuthController@user');
@@ -165,6 +166,10 @@ Route::prefix('v1')->group(function () {
                 Route::post('user/{id}', 'API\UserController@update');
                 Route::post('documents', 'API\UserController@riderDocuments');
             });
+            Route::post('fcm-token', 'API\FcmController@saveToken');
+            Route::get('available-shipment', 'API\ShipmentController@index');
+            Route::get('rider-shipment/{id}', 'API\ShipmentController@show');
+            Route::post('take-ride/{id}', 'API\ShipmentController@update');
         });
     });
 

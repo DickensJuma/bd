@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Comment;
 use App\Coupon;
 use App\Events\NewShipping;
+use App\FcmToken;
+use App\Helpers\FCM\RiderNotification;
 use App\Helpers\Payment\Mpesa;
 use App\Http\Controllers\Controller;
 use App\order;
@@ -108,7 +110,7 @@ class OrdersController extends Controller
                 $shipment = new Shipment();
                 $shipment->order_id = $order->id;
                 $shipment->shipmentId = strtoupper($shipmentNo);
-                $shipment->status = 'placed';
+                $shipment->status = 'new';
                 $shipment->seller_id = $id;
                 $shipment->deliveryFee = 100;
                 $shipment->save();
