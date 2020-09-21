@@ -95,6 +95,7 @@ class ShipmentController extends Controller
         $ships->map(function ($item, $key) {
             $item->dialed_rider_id = null;
             $item->status = 'new';
+            $item->rider_id = null;
             $item->update();
         });
 
