@@ -19,6 +19,8 @@ class CreateOrderItemsTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('shipment_id');
             $table->timestamps();
+
+
             $table->foreign('order_id')->references('id')->on('orders')
                 ->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')

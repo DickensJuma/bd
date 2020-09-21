@@ -19,7 +19,9 @@ class DeliveryController extends Controller
     {
         return Delivery::where('Rider_id', auth()->user()->id)->with('order')->get();
     }
-
+    public function getShop($id){
+        
+    }
     public function rider($id)
     {
         $order_id = order::where('orderNo', $id)->value('id');

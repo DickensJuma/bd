@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 Broadcast::channel('shipment.{id}', function ($user, $id) {
+    dd($user->id);
     return (int) $user->id === (int) $id;
 });
 

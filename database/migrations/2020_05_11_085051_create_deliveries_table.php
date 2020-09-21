@@ -18,6 +18,8 @@ class CreateDeliveriesTable extends Migration
             $table->unsignedBigInteger('Rider_id');
             $table->unsignedBigInteger('Customer_id');
             $table->unsignedBigInteger('Order_id');
+            $table->unsignedBigInteger('shipping_id');
+
             $table->foreign('Rider_id')->references('id')->on('users')
                 ->onDelete('cascade');
             $table->foreign('Customer_id')->references('id')->on('users')
