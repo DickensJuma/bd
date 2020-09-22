@@ -187,14 +187,16 @@ class OrdersController extends Controller
     public function comment(Request $request,$id)
     {
         $this->validate($request,[
-           'orderNo' => 'required|integer',
-            'message'=>'required|string'
+           'shipmentNo' => 'required|integer',
+            'comment'=>'required|string'
         ]);
+        $orderId = order::where('orderNo',$id)->value('id');
         $comment = new Comment();
-        $comment ->orderNo = $request->orderNo;
-        $comment->shipmentId = $id;
+        $comment ->orderNo = $orderId;
+        $comment->shipmentId = $request->shipmentNo;
         $comment->userId = Auth::user()->id;
-        $comment->comment = $request->message;
+        $comment->comment = $request->comment;
+        $comment->status = 'New';
         $comment->save();
         return response()->json([
             "Message" => "Success"
