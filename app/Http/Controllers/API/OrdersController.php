@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\order;
 use App\orderItem;
 use App\Product;
+use App\Rating;
 use App\Shipment;
 use Illuminate\Http\Request;
 use Auth;
@@ -201,6 +202,22 @@ class OrdersController extends Controller
         return response()->json([
             "Message" => "Success"
         ], 200);
+    }
+    public function rate(Request $request,$id)
+    {
+        $orderId = order::where('orderNo',$id)->value('id');
+        $rating = new Rating();
+        $rating ->orderNo = $orderId;
+        $rating->shipmentId = $request->shipmentNo;
+        $rating->rating = $request->rating;
+        $rating->save();
+        return response()->json([
+            "Message" => "Success"
+        ], 200);
+    }
+    public function getComments($id){
+        $orderId = order::where('orderNo',$id)->value('id');
+        return Comment::where('orderNo',$orderId)->with('user')->get();
     }
     public function showShipment($id)
     {

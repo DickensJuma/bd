@@ -72,6 +72,8 @@ Route::prefix('v1')->group(function () {
             Route::get('show-details/{id}', 'API\OrdersController@showDetails');
             Route::get('showshipment/{id}', 'API\OrdersController@showShipment');
             Route::post('comment/{id}', 'API\OrdersController@comment');
+            Route::get('getComments/{id}','API\OrdersController@getComments');
+            Route::post('rate/{id}', 'API\OrdersController@rate');
             Route::patch('cancel-order/{id}', 'API\OrdersController@cancelOrder');
             Route::post('pay/{id}', 'API\OrdersController@makePayment');
         });
