@@ -86,7 +86,7 @@ class ShipmentController extends Controller
     public function myRides()
     {
         $user = auth()->user();
-        return Shipment::latest()->where('rider_id', $user->id)->paginate(10);
+        return Shipment::latest()->where('rider_id', $user->id)->paginate(4);
     }
 
     public function clearShipments()
