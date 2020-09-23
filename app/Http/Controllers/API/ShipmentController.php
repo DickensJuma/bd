@@ -83,9 +83,10 @@ class ShipmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function myRides()
     {
-        //
+        $user = auth()->user();
+        return Shipment::latest()->where('rider_id', $user->id)->paginate(4);
     }
 
     public function clearShipments()
