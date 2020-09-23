@@ -127,7 +127,9 @@ class UserController extends Controller
     {
         return User::where('id', $id)->with('shop')->with('ride')->with('product')->firstOrFail();
     }
-
+    public function getMyDoc($id){
+        return RiderDocs::where('rider_id', $id)->get();
+    }
 
     public function riderDocuments(Request $request)
     {

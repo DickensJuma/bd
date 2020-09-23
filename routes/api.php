@@ -165,6 +165,8 @@ Route::prefix('v1')->group(function () {
                 Route::get('rider-details/{id}', 'API\RiderController@riderDetail');
                 Route::post('user/{id}', 'API\UserController@update');
                 Route::post('documents', 'API\UserController@riderDocuments');
+                Route::get('docs/{id}','API\UserController@getMyDoc');
+                Route::delete('deleteDocs/{id}', 'API\UserController@deleteDocs');
             });
             Route::post('fcm-token', 'API\FcmController@saveToken');
             Route::get('available-shipment', 'API\ShipmentController@index');
