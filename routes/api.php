@@ -170,6 +170,7 @@ Route::prefix('v1')->group(function () {
             Route::get('available-shipment', 'API\ShipmentController@index');
             Route::get('rider-shipment/{id}', 'API\ShipmentController@show');
             Route::post('take-ride/{id}', 'API\ShipmentController@update');
+            Route::get('my-rides/{id}', 'API\ShipmentController@myRides');
         });
     });
 
