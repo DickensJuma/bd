@@ -8,12 +8,14 @@ use App\Events\NewShipping;
 use App\FcmToken;
 use App\Helpers\FCM\RiderNotification;
 use App\Helpers\Payment\Mpesa;
+use App\Helpers\VasSms\Vas;
 use App\Http\Controllers\Controller;
 use App\order;
 use App\orderItem;
 use App\Product;
 use App\Rating;
 use App\Shipment;
+use App\User;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -117,6 +119,7 @@ class OrdersController extends Controller
                 $shipment->save();
                 $total = 0;
 
+
                 foreach ($request->cart as $item) {
                     if ($item['product']['user_id'] == $id) {
                         $orderItem = new orderItem();
@@ -132,6 +135,11 @@ class OrdersController extends Controller
                 $shipment->total = $total;
                 $shipment->update();
                 broadcast(new NewShipping($shipment));
+
+                $phone = User::where('id', $id)->value('phone');
+                $message = 'New order has been placed with ORDERNO: ' . $shipment->shipmentId;
+                 Vas::send_sms($phone,$message);
+                ;
             }
 
             // Pay
