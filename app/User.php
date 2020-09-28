@@ -94,5 +94,8 @@ class User extends Authenticatable implements JwtSubject
             'phone_verified_at' => $this->freshTimestamp(),
         ])->save();
     }
-    
+
+    public function wallet(){
+        return $this->hasOne(Wallet::class, 'rider_id');
+    }
 }
