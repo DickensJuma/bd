@@ -65,6 +65,7 @@ Route::prefix('v1')->group(function () {
         Route::post('search-products', 'API\ShopController@searchProducts');
         Route::post('filter-products', 'API\ProductController@filterProducts');
 
+
         Route::group(['middleware' => 'jwt.auth'], function () {
             Route::post('apply-coupon', 'API\CouponsController@applyCoupon');
             Route::post('order', 'API\OrdersController@store');
@@ -126,6 +127,7 @@ Route::prefix('v1')->group(function () {
                     Route::get('myRider/{id}','API\DeliveryController@rider');
                     Route::get('getShop/{id}','API\DeliveryController@getShop');
                     Route::post('Rider/{id}','API\DeliveryController@myRider');
+                    Route::get('sales', 'API\DashboardController@getMonthlySales');
                 });
             });
         });
