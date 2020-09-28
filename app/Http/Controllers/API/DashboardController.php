@@ -61,6 +61,30 @@ class DashboardController extends Controller
         return $monthly_sales_count_array;
     }
 
+    function getMonthlySalesTotal($month){
+        $monthly_sales_value = order::whereMonth('created_at',$month)->get()->sum('total_price');
+        return $monthly_sales_value;
+    }
+    function getMonthlySalesValue(){
+        $monthly_sales_value_array = array();
+        $month_array = $this->getAllMonths();
+        $month_name_array = array();
+        if (!empty($month_array)){
+            foreach ($month_array as $month_no => $month_name){
+                $monthly_sales_value = $this->getMonthlySalesTotal($month_no);
+                array_push($monthly_sales_value_array,$monthly_sales_value);
+                array_push($month_name_array,$month_name);
+            }
+        }
+
+        $monthly_sales_count_array = array(
+            'months' => $month_name_array,
+            'sales_value' => $monthly_sales_value_array,
+
+        );
+        return $monthly_sales_count_array;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
