@@ -102,7 +102,7 @@ class ShipmentController extends Controller
 
             $rider = User::findOrFail($shipment->rider_id);
 
-            if ($rider->wallet->exists()) {
+            if ($rider->wallet()->exists()) {
                 $rider->wallet->balance += $shipment->deliveryFee;
             } else {
                 $wallet = new Wallet();
