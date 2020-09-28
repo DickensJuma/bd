@@ -177,6 +177,7 @@ Route::prefix('v1')->group(function () {
             Route::get('rider-shipment/{id}', 'API\ShipmentController@show');
             Route::post('take-ride/{id}', 'API\ShipmentController@update');
             Route::get('my-rides', 'API\ShipmentController@myRides');
+            Route::get('complete-ride/{id}', 'API\ShipmentController@completeRide');
         });
     });
 
