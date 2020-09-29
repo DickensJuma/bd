@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class order extends Model
 {
+    protected $casts = [ 'created_at' => 'date' ];
     public function items(){
         return $this->hasMany(orderItem::class, 'order_id');
     }
