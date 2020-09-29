@@ -176,6 +176,8 @@ Route::prefix('v1')->group(function () {
             Route::post('take-ride/{id}', 'API\ShipmentController@update');
             Route::get('my-rides', 'API\ShipmentController@myRides');
             Route::get('complete-ride/{id}', 'API\ShipmentController@completeRide');
+            Route::get('wallet-balance', 'API\WalletController@walletBalance');
+            Route::get('wallet-transactions', 'API\WalletController@walletTransactions');
         });
     });
 
