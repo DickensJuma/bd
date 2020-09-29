@@ -104,6 +104,7 @@ class ShipmentController extends Controller
 
             if ($rider->wallet()->exists()) {
                 $rider->wallet->balance += $shipment->deliveryFee;
+                $rider->wallet->update();
             } else {
                 $wallet = new Wallet();
                 $wallet->rider_id = $shipment->rider_id;
