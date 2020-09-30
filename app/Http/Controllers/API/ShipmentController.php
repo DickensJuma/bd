@@ -64,6 +64,16 @@ class ShipmentController extends Controller
     public function update(Request $request, $id)
     {
         $shipment = Shipment::findOrFail($id);
+        $user = auth()->user();
+
+        $intransit = Shipment::where('rider_id', $user->id)->where('status', 'in-transit')->count();
+
+        if ($intransit > 0){
+            return response()->json([
+                'success' => false,
+                'message' => 'Please complete your pending rides to take another ride',
+            ], 403);
+        }
 
         if (!is_null($shipment->rider_id)) {
             return response()->json([
@@ -96,6 +106,14 @@ class ShipmentController extends Controller
     public function completeRide($shipmentId)
     {
         $shipment = Shipment::findOrFail($shipmentId);
+        $user = auth()->user();
+
+        if ($user->id != $shipment->rider_id){
+            return response()->json([
+                'success' => false,
+                'message' => 'Not your ride',
+            ], 403);
+        }
 
         \DB::transaction(function () use ($shipment) {
             $shipment->status = 'complete';

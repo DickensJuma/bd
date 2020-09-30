@@ -185,6 +185,7 @@ Route::prefix('v1')->group(function () {
             Route::get('wallet-transactions', 'API\WalletController@walletTransactions');
             Route::post('comment/{id}', 'API\ShipmentController@commentRide');
             Route::get('comments/{id}', 'API\ShipmentController@getRideComments');
+            Route::get('stats', 'API\WalletController@stats');
         });
     });
 
