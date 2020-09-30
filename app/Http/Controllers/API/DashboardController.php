@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\order;
+use App\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -16,9 +17,21 @@ class DashboardController extends Controller
      */
     public function index()
     {
-
-
-
+        $total_orders  = order::get()->count();
+        $total_sales = order::get()->sum('total_price');
+        $pending_orders =  order::where('status','pending')->count();
+        $delivered_orders = order::where('status','delivered')->count();
+        $data = array(
+            'total_orders' => $total_orders,
+            'total_sales' => $total_sales,
+            'pending_orders' =>  $pending_orders,
+            'delivered_orders' =>  $delivered_orders,
+        );
+        return ['data' => $data];
+    }
+    public function visitors(){
+        $visitor = Product::where('status',1)->orderBy('visitors','desc')->with(['subCategory', 'subCategory.brands'])->with('category')->get();
+        return $visitor;
     }
     function getAllMonths(){
         $month_array = array();

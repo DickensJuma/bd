@@ -129,6 +129,8 @@ Route::prefix('v1')->group(function () {
                     Route::post('Rider/{id}','API\DeliveryController@myRider');
                     Route::get('sales', 'API\DashboardController@getMonthlySales');
                     Route::get('value', 'API\DashboardController@getMonthlySalesValue');
+                    Route::get('dash', 'API\DashboardController@index');
+                    Route::get('visitors', 'API\DashboardController@visitors');
                 });
             });
         });
