@@ -165,7 +165,15 @@ class AuthController extends Controller
                 $user->verification_code = $code;
                 $user->update();
 
-                if (!$this->sendPhoneVerificationCode(substr($request->phone, 1), $code)){
+//                if (!$this->sendPhoneVerificationCode(substr($request->phone, 1), $code)){
+//                    return response()->json([
+//                        'success' => false,
+//                        'message' => 'Code not sent',
+//                    ], 403);
+//                }
+
+                $message = "Your Transmall verification code is " . $code;
+                if (!Vas::send_sms($request->phone, $message)) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Code not sent',
