@@ -143,12 +143,12 @@ class OrdersController extends Controller
             }
 
             // Pay
-            $phoneNo = '254' . substr($request->phone, -9);
-            $trans_id = $order->orderNo; // unique id
-            $customer_id = $order->customer_id; // user id
-            $amount = (int)$order->sub_total; //  amount to pay. Must be int
-            $service_id = '1'; // type of service e.g 1- advertisement, 2- booking
-            Mpesa::stk_push($trans_id, $customer_id, $phoneNo, $amount, $service_id);
+//            $phoneNo = '254' . substr($request->phone, -9);
+//            $trans_id = $order->orderNo; // unique id
+//            $customer_id = $order->customer_id; // user id
+//            $amount = (int)$order->sub_total; //  amount to pay. Must be int
+//            $service_id = '1'; // type of service e.g 1- advertisement, 2- booking
+//            Mpesa::stk_push($trans_id, $customer_id, $phoneNo, $amount, $service_id);
         });
 
         return response()->json([
