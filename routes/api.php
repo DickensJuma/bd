@@ -131,6 +131,10 @@ Route::prefix('v1')->group(function () {
                     Route::get('value', 'API\DashboardController@getMonthlySalesValue');
                     Route::get('dash', 'API\DashboardController@index');
                     Route::get('visitors', 'API\DashboardController@visitors');
+                    Route::get('Usersales', 'API\DashboardController@getMonthlyUserSales');
+                    Route::get('Uservalue', 'API\DashboardController@getMonthlyUserSalesValue');
+                    Route::get('Userdash', 'API\DashboardController@UserDash');
+
                 });
             });
         });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\order;
 use App\Product;
+use App\Shipment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,21 @@ class DashboardController extends Controller
         $total_sales = order::get()->sum('total_price');
         $pending_orders =  order::where('status','pending')->count();
         $delivered_orders = order::where('status','delivered')->count();
+        $data = array(
+            'total_orders' => $total_orders,
+            'total_sales' => $total_sales,
+            'pending_orders' =>  $pending_orders,
+            'delivered_orders' =>  $delivered_orders,
+        );
+        return ['data' => $data];
+    }
+    public function UserDash()
+    {
+        $user_id = auth()->user()->id;
+        $total_orders  = Shipment::where('seller_id', $user_id)->get()->count();
+        $total_sales =Shipment::where('seller_id', $user_id)->get()->sum('total_price');
+        $pending_orders = Shipment::where('seller_id', $user_id)->where('status','pending')->count();
+        $delivered_orders = Shipment::where('seller_id', $user_id)->where('status','delivered')->count();
         $data = array(
             'total_orders' => $total_orders,
             'total_sales' => $total_sales,
@@ -98,6 +114,56 @@ class DashboardController extends Controller
         return $monthly_sales_count_array;
     }
 
+
+    function getMonthlyUserSales_count($month){
+        $user_id = auth()->user()->id;
+        $monthly_sales = Shipment::where('seller_id',$user_id)->whereMonth('created_at',$month)->get()->count();
+        return $monthly_sales;
+    }
+    function getMonthlyUserSales(){
+        $monthly_sales_count_array = array();
+        $month_array = $this->getAllMonths();
+        $month_name_array = array();
+        if (!empty($month_array)){
+            foreach ($month_array as $month_no => $month_name){
+                $monthly_sales_count = $this-> getMonthlyUserSales_count($month_no);
+                array_push($monthly_sales_count_array,$monthly_sales_count);
+                array_push($month_name_array,$month_name);
+            }
+        }
+        $max_no = max($monthly_sales_count_array);
+        $max = round(($max_no + 10/2) / 10)* 10;
+        $monthly_sales_count_array = array(
+            'months' => $month_name_array,
+            'sales_count' => $monthly_sales_count_array,
+            'max'=> $max,
+        );
+        return $monthly_sales_count_array;
+    }
+    function getMonthlyUserSalesTotal($month){
+        $user_id = auth()->user()->id;
+        $monthly_sales_value =  Shipment::where('seller_id',$user_id)->whereMonth('created_at',$month)->get()->sum('total_price');
+        return $monthly_sales_value;
+    }
+    function getMonthlyUserSalesValue(){
+        $monthly_sales_value_array = array();
+        $month_array = $this->getAllMonths();
+        $month_name_array = array();
+        if (!empty($month_array)){
+            foreach ($month_array as $month_no => $month_name){
+                $monthly_sales_value = $this-> getMonthlyUserSalesTotal($month_no);
+                array_push($monthly_sales_value_array,$monthly_sales_value);
+                array_push($month_name_array,$month_name);
+            }
+        }
+
+        $monthly_sales_count_array = array(
+            'months' => $month_name_array,
+            'sales_value' => $monthly_sales_value_array,
+
+        );
+        return $monthly_sales_count_array;
+    }
     /**
      * Store a newly created resource in storage.
      *
