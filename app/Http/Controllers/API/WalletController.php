@@ -15,7 +15,7 @@ class WalletController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $user->wallet()->exists() ? $user->wallet->balance : 0
+            'data' => $user->wallet()->exists() ? $user->wallet->balance : "0.0"
         ], 200);
     }
 
