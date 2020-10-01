@@ -173,7 +173,7 @@ class AuthController extends Controller
 //                }
 
                 $message = "Your Transmall verification code is " . $code;
-                if (!Vas::send_sms($request->phone, $message)) {
+                if (!Vas::send_sms(substr($request->phone, 1), $message)) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Code not sent',
