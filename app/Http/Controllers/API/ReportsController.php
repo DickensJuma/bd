@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\order;
+use App\Shipment;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ReportsController extends Controller
 {
@@ -23,9 +26,10 @@ class ReportsController extends Controller
         $this->validate($request, [
             'fromDate' => 'required',
             'toDate'=> 'required',
+            'shop' => 'required'
         ]);
 
-        $orders = order::where('paid', 1)->whereBetween('created_at', [$request->fromDate, $request->toDate])->with('customer')->with('coupon')->get();
+        $orders = Shipment::where('seller_id',$request->shop)->whereBetween('created_at', [$request->fromDate, $request->toDate])->with(['order','order.coupon','order.customer'])->get();
 
         if (count($orders) < 1){
             throw ValidationException::withMessages(['no_data' => 'Sorry! No data found']);
