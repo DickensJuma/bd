@@ -183,20 +183,15 @@ class AuthController extends Controller
             ]);
 
             if ($user = User::where('phone', $request->phone)->firstOrFail()) {
-                $code = random_int(100000, 999999);
+                $password = substr(md5(time() . $user->id), 0, 10);
+                $user->password = bcrypt($password);
+                $user->update();
 
-                $reset = new ResetPassword();
-                $reset->code = $code;
-                $reset->phone = $request->phone;
-                $reset->save();
-
-                $urlToResetForm = env('FRONT_APP') . "/auth/reset_password/" . $code . '?phone=' . $request->phone;
-                $message = 'Hey! Your password reset link is ' . $urlToResetForm . '. This password reset link will expire'
-                    . ' in ' . config('auth.passwords.users.expire') . ' minutes';
+                $message = "Hey! Your One-Time-Password is " . $password . ". Use it to Login and reset your password";
                 if (Vas::send_sms($request->phone, $message)) {
                     return response()->json([
                         'success' => true,
-                        'message' => 'Reset link was sent to your phone',
+                        'message' => 'OTP sent to your phone',
                     ], 200);
                 }
 

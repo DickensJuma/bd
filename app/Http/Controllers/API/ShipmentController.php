@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\RideComment;
 use App\Shipment;
 use App\User;
 use App\Wallet;
@@ -63,6 +64,16 @@ class ShipmentController extends Controller
     public function update(Request $request, $id)
     {
         $shipment = Shipment::findOrFail($id);
+        $user = auth()->user();
+
+        $intransit = Shipment::where('rider_id', $user->id)->where('status', 'in-transit')->count();
+
+        if ($intransit > 0){
+            return response()->json([
+                'success' => false,
+                'message' => 'Please complete your pending rides to take another ride',
+            ], 403);
+        }
 
         if (!is_null($shipment->rider_id)) {
             return response()->json([
@@ -95,6 +106,14 @@ class ShipmentController extends Controller
     public function completeRide($shipmentId)
     {
         $shipment = Shipment::findOrFail($shipmentId);
+        $user = auth()->user();
+
+        if ($user->id != $shipment->rider_id){
+            return response()->json([
+                'success' => false,
+                'message' => 'Not your ride',
+            ], 403);
+        }
 
         \DB::transaction(function () use ($shipment) {
             $shipment->status = 'complete';
@@ -124,6 +143,47 @@ class ShipmentController extends Controller
         return response()->json([
             "success" => true,
         ], 200);
+    }
+
+    public function commentRide(Request $request, $id)
+    {
+        $this->validate($request, [
+            'comment' => 'required|string',
+        ]);
+
+        if ($request->app != 1){
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorised',
+            ], 403);
+        }
+
+        $shipment = Shipment::findOrFail($id);
+
+        if ($shipment->status == 'in-transit'){
+            return response()->json([
+                'success' => false,
+                'message' => 'Please complete ride to add comment',
+            ], 400);
+        }
+
+        $ride_comment = new RideComment();
+        $ride_comment->comment = $request->comment;
+        $ride_comment->shipment_id = $id;
+        $ride_comment->user_id = auth()->user()->id;
+        $ride_comment->save();
+
+        return response()->json([
+            "success" => true,
+            "message" => "Comment posted successfully"
+        ], 200);
+    }
+
+    public function getRideComments($id)
+    {
+        return RideComment::latest()->where('shipment_id', $id)->with(array('user' => function ($query) {
+            $query->select('id', 'name');
+        }))->paginate(7);
     }
 
     public function clearShipments()
