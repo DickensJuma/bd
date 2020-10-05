@@ -34,8 +34,8 @@ class DashboardController extends Controller
     {
         $user_id = auth()->user()->id;
         $total_orders  = Shipment::where('seller_id', $user_id)->get()->count();
-        $total_sales =Shipment::where('seller_id', $user_id)->get()->sum('total_price');
-        $pending_orders = Shipment::where('seller_id', $user_id)->where('status','pending')->count();
+        $total_sales =Shipment::where('seller_id', $user_id)->get()->sum('total');
+        $pending_orders = Shipment::where('seller_id', $user_id)->where('status','placed')->count();
         $delivered_orders = Shipment::where('seller_id', $user_id)->where('status','delivered')->count();
         $data = array(
             'total_orders' => $total_orders,
@@ -142,7 +142,7 @@ class DashboardController extends Controller
     }
     function getMonthlyUserSalesTotal($month){
         $user_id = auth()->user()->id;
-        $monthly_sales_value =  Shipment::where('seller_id',$user_id)->whereMonth('created_at',$month)->get()->sum('total_price');
+        $monthly_sales_value =  Shipment::where('seller_id',$user_id)->whereMonth('created_at',$month)->get()->sum('total');
         return $monthly_sales_value;
     }
     function getMonthlyUserSalesValue(){
