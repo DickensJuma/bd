@@ -37,6 +37,23 @@ class ReportsController extends Controller
 
         return $orders;
     }
+    public function RetailerShoppingReports(Request $request)
+    {
+        $this->validate($request, [
+            'fromDate' => 'required',
+            'toDate'=> 'required',
+        ]);
+
+        $userId = auth()->user()->id;
+
+        $orders = Shipment::where('seller_id', $userId)->whereBetween('created_at', [$request->fromDate, $request->toDate])->with(['order','order.coupon','order.customer'])->get();
+
+        if (count($orders) < 1){
+            throw ValidationException::withMessages(['no_data' => 'Sorry! No data found']);
+        }
+
+        return $orders;
+    }
     /**
      * Store a newly created resource in storage.
      *
