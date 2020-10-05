@@ -34,9 +34,24 @@ class DashboardController extends Controller
     {
         $user_id = auth()->user()->id;
         $total_orders  = Shipment::where('seller_id', $user_id)->get()->count();
-        $total_sales =Shipment::where('seller_id', $user_id)->get()->sum('total_price');
-        $pending_orders = Shipment::where('seller_id', $user_id)->where('status','pending')->count();
+        $total_sales =Shipment::where('seller_id', $user_id)->get()->sum('total');
+        $pending_orders = Shipment::where('seller_id', $user_id)->where('status','placed')->count();
         $delivered_orders = Shipment::where('seller_id', $user_id)->where('status','delivered')->count();
+        $data = array(
+            'total_orders' => $total_orders,
+            'total_sales' => $total_sales,
+            'pending_orders' =>  $pending_orders,
+            'delivered_orders' =>  $delivered_orders,
+        );
+        return ['data' => $data];
+    }
+    public function RiderDash()
+    {
+        $user_id = auth()->user()->id;
+        $total_orders  = Shipment::where('rider_id', $user_id)->get()->count();
+        $total_sales =Shipment::where('rider_id', $user_id)->get()->sum('deliveryFee');
+        $pending_orders = Shipment::where('rider_id', $user_id)->where('status','placed')->count();
+        $delivered_orders = Shipment::where('rider_id', $user_id)->where('status','delivered')->count();
         $data = array(
             'total_orders' => $total_orders,
             'total_sales' => $total_sales,
@@ -142,7 +157,7 @@ class DashboardController extends Controller
     }
     function getMonthlyUserSalesTotal($month){
         $user_id = auth()->user()->id;
-        $monthly_sales_value =  Shipment::where('seller_id',$user_id)->whereMonth('created_at',$month)->get()->sum('total_price');
+        $monthly_sales_value =  Shipment::where('seller_id',$user_id)->whereMonth('created_at',$month)->get()->sum('total');
         return $monthly_sales_value;
     }
     function getMonthlyUserSalesValue(){
@@ -163,6 +178,56 @@ class DashboardController extends Controller
 
         );
         return $monthly_sales_count_array;
+    }
+
+    function getMonthlyDelivery_count($month){
+        $user_id = auth()->user()->id;
+        $monthly_sales = Shipment::where('rider_id',$user_id)->whereMonth('created_at',$month)->get()->count();
+        return $monthly_sales;
+    }
+    function getMonthlyDelivery(){
+        $monthly_delivery_count_array = array();
+        $month_array = $this->getAllMonths();
+        $month_name_array = array();
+        if (!empty($month_array)){
+            foreach ($month_array as $month_no => $month_name){
+                $monthly_delivery_count = $this->getMonthlyDelivery_count($month_no);
+                array_push( $monthly_delivery_count_array,$monthly_delivery_count);
+                array_push($month_name_array,$month_name);
+            }
+        }
+        $max_no = max( $monthly_delivery_count_array);
+        $max = round(($max_no + 10/2) / 10)* 10;
+        $monthly_delivery_count_array = array(
+            'months' => $month_name_array,
+            'delivery_count' => $monthly_delivery_count_array,
+            'max'=> $max,
+        );
+        return $monthly_delivery_count_array;
+    }
+    function getMonthlyUserEarningTotal($month){
+        $user_id = auth()->user()->id;
+        $monthly_sales_value =  Shipment::where('rider_id',$user_id)->whereMonth('created_at',$month)->get()->sum('deliveryFee');
+        return $monthly_sales_value;
+    }
+    function getMonthlyUserEarning(){
+        $monthly_earning_value_array = array();
+        $month_array = $this->getAllMonths();
+        $month_name_array = array();
+        if (!empty($month_array)){
+            foreach ($month_array as $month_no => $month_name){
+                $monthly_earning_value = $this-> getMonthlyUserEarningTotal($month_no);
+                array_push( $monthly_earning_value_array,$monthly_earning_value);
+                array_push($month_name_array,$month_name);
+            }
+        }
+
+        $monthly_earning_value_array = array(
+            'months' => $month_name_array,
+            'earning_value' => $monthly_earning_value_array,
+
+        );
+        return  $monthly_earning_value_array;
     }
     /**
      * Store a newly created resource in storage.

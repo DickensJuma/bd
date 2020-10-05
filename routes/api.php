@@ -125,9 +125,6 @@ Route::prefix('v1')->group(function () {
                     Route::get('value', 'API\DashboardController@getMonthlySalesValue');
                     Route::get('dash', 'API\DashboardController@index');
                     Route::get('visitors', 'API\DashboardController@visitors');
-                    Route::get('Usersales', 'API\DashboardController@getMonthlyUserSales');
-                    Route::get('Uservalue', 'API\DashboardController@getMonthlyUserSalesValue');
-                    Route::get('Userdash', 'API\DashboardController@UserDash');
                     Route::post('shopping-report', 'API\ReportsController@shoppingReports');
                 });
             });
@@ -157,6 +154,9 @@ Route::prefix('v1')->group(function () {
                 Route::get('showOrderDetails/{id}', 'API\OrdersController@showOrderDetails');
                 Route::get('verified_riders', 'API\BroadcastController@getRiders');
                 Route::post('dial_a_rider/{id}', 'API\BroadcastController@dialARider');
+                Route::get('Usersales', 'API\DashboardController@getMonthlyUserSales');
+                Route::get('Uservalue', 'API\DashboardController@getMonthlyUserSalesValue');
+                Route::get('Userdash', 'API\DashboardController@UserDash');
             });
         });
     });
@@ -172,6 +172,9 @@ Route::prefix('v1')->group(function () {
                 Route::post('documents', 'API\UserController@riderDocuments');
                 Route::get('docs/{id}', 'API\UserController@getMyDoc');
                 Route::delete('deleteDocs/{id}', 'API\UserController@deleteDocs');
+                Route::get('UserDelivery', 'API\DashboardController@getMonthlyDelivery');
+                Route::get('UserEarning', 'API\DashboardController@getMonthlyUserEarning');
+                Route::get('Riderdash', 'API\DashboardController@RiderDash');
             });
             Route::post('fcm-token', 'API\FcmController@saveToken');
             Route::get('available-shipment', 'API\ShipmentController@index');
