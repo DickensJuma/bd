@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Spatie\Newsletter\Newsletter;
+use Newsletter;
 
 class NewsletterController extends Controller
 {
@@ -32,7 +32,7 @@ class NewsletterController extends Controller
         ]);
         if ( ! Newsletter::isSubscribed($request->email) )
                 {
-                   Newsletter::subscribePending($request->email);
+                   Newsletter::subscribe($request->email);
                     return response(['status' => 'success'], 200);
                 }
         throw ValidationException::withMessages(['failure' => 'Sorry! You have already subscribed ']);
