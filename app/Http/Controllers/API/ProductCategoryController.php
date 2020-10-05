@@ -25,7 +25,7 @@ class ProductCategoryController extends Controller
     }
 
     public function categoriesSubCategoriesBrands(){
-        return ProductCategory::orderBy('name')->with(['category','subCategory', 'subCategory.brands'])->get();
+        return ProductCategory::orderBy('name')->with(['subCategory', 'subCategory.brands'])->get();
     }
 
     /**
