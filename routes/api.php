@@ -172,6 +172,9 @@ Route::prefix('v1')->group(function () {
                 Route::post('documents', 'API\UserController@riderDocuments');
                 Route::get('docs/{id}', 'API\UserController@getMyDoc');
                 Route::delete('deleteDocs/{id}', 'API\UserController@deleteDocs');
+                Route::get('UserDelivery', 'API\DashboardController@getMonthlyDelivery');
+                Route::get('UserEarning', 'API\DashboardController@getMonthlyUserEarning');
+                Route::get('Riderdash', 'API\DashboardController@RiderDash');
             });
             Route::post('fcm-token', 'API\FcmController@saveToken');
             Route::get('available-shipment', 'API\ShipmentController@index');
