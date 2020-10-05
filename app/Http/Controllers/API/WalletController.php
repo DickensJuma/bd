@@ -49,9 +49,14 @@ class WalletController extends Controller
     public function earningReport(Request $request)
     {
         $year = $request->query('year');
-        return WalletTransaction::where('rider_id', auth()->user()->id)->where('type', 'ride-complete')->whereYear('created_at', $year)->select(
+        $data = WalletTransaction::where('rider_id', auth()->user()->id)->where('type', 'ride-complete')->whereYear('created_at', $year)->select(
             DB::raw('sum(amount) as sum'),
             DB::raw("DATE_FORMAT(created_at,'%M') as month")
         )->groupBy('month')->get();
+
+        return response()->json([
+            'success'=>true,
+            'data'=>$data
+        ], 200);
     }
 }
