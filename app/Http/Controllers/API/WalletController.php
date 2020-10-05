@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Shipment;
 use App\WalletTransaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WalletController extends Controller
 {
@@ -42,5 +44,13 @@ class WalletController extends Controller
             'success' => true,
             'data' => $data
         ], 200);
+    }
+
+    public function earningReport()
+    {
+        return WalletTransaction::where('rider_id', auth()->user()->id)->where('type', 'ride-complete')->whereYear('created_at', date('Y'))->select(
+            DB::raw('sum(amount) as sum'),
+            DB::raw("DATE_FORMAT(created_at,'%M') as month")
+        )->groupBy('month')->get();
     }
 }

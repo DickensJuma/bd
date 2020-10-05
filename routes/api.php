@@ -35,12 +35,6 @@ Route::prefix('v1')->group(function () {
     });
 
 
-
-
-
-
-
-
     Route::get('subcat_brands/{id}', 'API\ProductController@get_subcategory_brands');
     Route::get('/email/resend/{email}', 'API\VerificationController@resend')->name('verification.resend');
     Route::post('auth/emailCheck', 'API\UserController@checkEmail');
@@ -73,7 +67,7 @@ Route::prefix('v1')->group(function () {
             Route::get('show-details/{id}', 'API\OrdersController@showDetails');
             Route::get('showshipment/{id}', 'API\OrdersController@showShipment');
             Route::post('comment/{id}', 'API\OrdersController@comment');
-            Route::get('getComments/{id}','API\OrdersController@getComments');
+            Route::get('getComments/{id}', 'API\OrdersController@getComments');
             Route::post('rate/{id}', 'API\OrdersController@rate');
             Route::patch('cancel-order/{id}', 'API\OrdersController@cancelOrder');
             Route::post('pay/{id}', 'API\OrdersController@makePayment');
@@ -100,8 +94,8 @@ Route::prefix('v1')->group(function () {
                 Route::get('riderDocs/{id}', 'API\UserController@riderDocs');
                 Route::get('deleteDocs/{id}', 'API\UserController@deleteDocs');
                 Route::get('download/{orderId}', 'API\UserController@downloadFile');
-                Route::patch('changeStatus/{id}','API\UserController@status');
-                Route::patch('changeVerificationStatus/{id}','API\UserController@verificationStatus');
+                Route::patch('changeStatus/{id}', 'API\UserController@status');
+                Route::patch('changeVerificationStatus/{id}', 'API\UserController@verificationStatus');
                 Route::prefix('shopLocal')->group(function () {
                     Route::apiResources(['category' => 'API\ProductCategoryController']);
                     Route::apiResources(['Subcategory' => 'API\ProductSubCategoryController']);
@@ -123,10 +117,10 @@ Route::prefix('v1')->group(function () {
                     Route::delete('delete-product/{id}', 'API\ProductController@destroy');
                     Route::patch('activate-product/{id}', 'API\ProductController@activate');
                     Route::post('update-product/{id}', 'API\ProductController@update');
-                    Route::post('delivery/{id}','API\DeliveryController@store');
-                    Route::get('myRider/{id}','API\DeliveryController@rider');
-                    Route::get('getShop/{id}','API\DeliveryController@getShop');
-                    Route::post('Rider/{id}','API\DeliveryController@myRider');
+                    Route::post('delivery/{id}', 'API\DeliveryController@store');
+                    Route::get('myRider/{id}', 'API\DeliveryController@rider');
+                    Route::get('getShop/{id}', 'API\DeliveryController@getShop');
+                    Route::post('Rider/{id}', 'API\DeliveryController@myRider');
                     Route::get('sales', 'API\DashboardController@getMonthlySales');
                     Route::get('value', 'API\DashboardController@getMonthlySalesValue');
                     Route::get('dash', 'API\DashboardController@index');
@@ -139,7 +133,7 @@ Route::prefix('v1')->group(function () {
     // wholesaler || retailer
     Route::group(['prefix' => 'retailer'], function () {
         //prefix(dashboard)
-        Route::group(['middleware' => ['auth.role:retailer,wholesaler','jwt.auth']], function () {
+        Route::group(['middleware' => ['auth.role:retailer,wholesaler', 'jwt.auth']], function () {
             Route::group(['prefix' => 'dashboard'], function () {
                 Route::post('products', 'API\ProductController@myproducts');
                 Route::apiResources(['category' => 'API\ProductCategoryController']);
@@ -176,7 +170,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('rider-details/{id}', 'API\RiderController@riderDetail');
                 Route::post('user/{id}', 'API\UserController@update');
                 Route::post('documents', 'API\UserController@riderDocuments');
-                Route::get('docs/{id}','API\UserController@getMyDoc');
+                Route::get('docs/{id}', 'API\UserController@getMyDoc');
                 Route::delete('deleteDocs/{id}', 'API\UserController@deleteDocs');
             });
             Route::post('fcm-token', 'API\FcmController@saveToken');
@@ -190,6 +184,7 @@ Route::prefix('v1')->group(function () {
             Route::post('comment/{id}', 'API\ShipmentController@commentRide');
             Route::get('comments/{id}', 'API\ShipmentController@getRideComments');
             Route::get('stats', 'API\WalletController@stats');
+            Route::get('earning-report', 'API\WalletController@earningReport');
         });
     });
 
