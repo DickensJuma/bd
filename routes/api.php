@@ -200,6 +200,8 @@ Route::prefix('v1')->group(function () {
                 Route::put('account', 'API\CustomerProfileController@account');
                 Route::put('location', 'API\CustomerProfileController@location');
                 Route::put('password', 'API\CustomerProfileController@password');
+                Route::get('newsletter', 'API\NewsletterController@create');
+                Route::post('newsletter', 'API\NewsletterController@store');
             });
         });
     });
