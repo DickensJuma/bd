@@ -155,6 +155,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('showOrderDetails/{id}', 'API\OrdersController@showOrderDetails');
                 Route::get('verified_riders', 'API\BroadcastController@getRiders');
                 Route::post('dial_a_rider/{id}', 'API\BroadcastController@dialARider');
+                Route::get('dial_nearby_riders/{id}', 'API\BroadcastController@dialNearbyRiders');
                 Route::get('Usersales', 'API\DashboardController@getMonthlyUserSales');
                 Route::get('Uservalue', 'API\DashboardController@getMonthlyUserSalesValue');
                 Route::get('Userdash', 'API\DashboardController@UserDash');

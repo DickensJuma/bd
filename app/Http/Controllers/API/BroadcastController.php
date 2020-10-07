@@ -6,8 +6,11 @@ use App\Events\DialRider;
 use App\FcmToken;
 use App\Helpers\FCM\RiderNotification;
 use App\Http\Controllers\Controller;
+use App\LocationTracking;
 use App\Shipment;
 use App\User;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class BroadcastController extends Controller
@@ -39,5 +42,43 @@ class BroadcastController extends Controller
             "message" => "success",
             "data" => $response
         ], 200);
+    }
+
+    public function dialNearbyRider($shipmentId)
+    {
+        $user = new User;
+        $query = ($user)->newQuery();
+        $shipment = Shipment::findOrFail($shipmentId);
+
+        // get riders with their last location recorded
+        $query->where('role', 'rider')->whereHas('lastRiderLocation')
+            ->with('lastRiderLocation')->select(['id', 'name', 'phone']);
+
+        // Within the last 1 hour
+        $query->whereHas('lastRiderLocation', function (Builder $query) {
+            $query->where('created_at', '>',
+                Carbon::now()->subHours(1)->toDateTimeString()
+            );
+        });
+
+        // Within 5km radius of the customer
+//        $query->distanceSphereExcludingSelf('last_rider_location->location', $shipment->location, 5000);
+
+        return $query->get();
+    }
+
+    public function dialNearbyRiders($shipmentId)
+    {
+        $loc = new LocationTracking;
+        $query = ($loc)->newQuery();
+        $shipment = Shipment::findOrFail($shipmentId);
+
+        // Within 5km radius of the customer
+        $query->distanceSphereExcludingSelf('location', $shipment->location, 5000);
+
+        // get riders with their last location recorded
+//        $query->where('created_at', '>', Carbon::now()->subHours(1)->toDateTimeString());
+
+        return $query->get();
     }
 }

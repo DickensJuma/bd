@@ -104,8 +104,8 @@ class User extends Authenticatable implements JwtSubject
         return $this->hasMany(WalletTransaction::class, 'rider_id')->latest();
     }
 
-    public function latestRiderLocation()
+    public function lastRiderLocation()
     {
-        return $this->hasMany(LocationTracking::class, 'user_id')->latest()->first();
+        return $this->hasOne(LocationTracking::class, 'user_id')->latest();
     }
 }
