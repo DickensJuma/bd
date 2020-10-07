@@ -201,4 +201,14 @@ class ShipmentController extends Controller
             "success" => true,
         ], 200);
     }
+
+    public function dialNearbyRiders()
+    {
+        $query = User::newQuery();
+
+        // get riders
+        $query->where('type', 'rider')->with('lastRiderLocation');
+
+        return $query;
+    }
 }

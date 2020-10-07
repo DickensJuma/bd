@@ -3,9 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
+
 
 class Shipment extends Model
 {
+    use SpatialTrait;
+
     public function order(){
         return $this->belongsTo(order::class, 'order_id');
     }
@@ -18,4 +22,8 @@ class Shipment extends Model
     {
         return $this->belongsTo(User::class, 'seller_id');
     }
+
+    protected $spatialFields = [
+        'location',
+    ];
 }

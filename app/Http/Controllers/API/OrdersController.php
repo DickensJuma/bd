@@ -16,6 +16,7 @@ use App\Product;
 use App\Rating;
 use App\Shipment;
 use App\User;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -116,6 +117,7 @@ class OrdersController extends Controller
                 $shipment->status = 'new';
                 $shipment->seller_id = $id;
                 $shipment->deliveryFee = 100;
+                $shipment->location = new Point($request->latitude, $request->longitude);
                 $shipment->save();
                 $total = 0;
 
