@@ -50,6 +50,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
     Route::post('contact', 'API\ContactController@contact');
     Route::post('visited', 'API\ProductController@isVisited');
+    Route::post('newsletter', 'API\NewsletterController@store');
     Route::prefix('shopLocal')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');

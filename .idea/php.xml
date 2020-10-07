@@ -130,10 +130,15 @@
       <path value="$PROJECT_DIR$/vendor/league/mime-type-detection" />
       <path value="$PROJECT_DIR$/vendor/apility/laravel-fcm" />
       <path value="$PROJECT_DIR$/vendor/symfony/http-client-contracts" />
+<<<<<<< HEAD
       <path value="$PROJECT_DIR$/vendor/grimzy/laravel-mysql-spatial" />
       <path value="$PROJECT_DIR$/vendor/jmikola/geojson" />
       <path value="$PROJECT_DIR$/vendor/geo-io/wkb-parser" />
       <path value="$PROJECT_DIR$/vendor/geo-io/interface" />
+=======
+      <path value="$PROJECT_DIR$/vendor/drewm/mailchimp-api" />
+      <path value="$PROJECT_DIR$/vendor/spatie/laravel-newsletter" />
+>>>>>>> 21b2cd22ff2468875693251d91f9a6b34f1fb227
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
