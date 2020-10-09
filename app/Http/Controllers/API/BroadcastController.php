@@ -79,9 +79,8 @@ class BroadcastController extends Controller
         // Within 5km radius of the customer
         $query->distanceSphereExcludingSelf('location', $shipment->location, 5000);
 
-        $query->pluck('user_id');
+        $query->select('user_id');
 
-//        return $query->get();
-        return 'hello';
+        return $query->get();
     }
 }
