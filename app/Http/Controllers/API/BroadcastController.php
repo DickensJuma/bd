@@ -73,11 +73,13 @@ class BroadcastController extends Controller
         $query = ($loc)->newQuery();
         $shipment = Shipment::findOrFail($shipmentId);
 
+        // get riders with their last location recorded
+        $query->where('created_at', '>', Carbon::now()->subHours(1)->toDateTimeString());
+
         // Within 5km radius of the customer
         $query->distanceSphereExcludingSelf('location', $shipment->location, 5000);
 
-        // get riders with their last location recorded
-//        $query->where('created_at', '>', Carbon::now()->subHours(1)->toDateTimeString());
+        $query->distinct('user_id');
 
         return $query->get();
     }
