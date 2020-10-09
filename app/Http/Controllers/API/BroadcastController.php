@@ -81,6 +81,7 @@ class BroadcastController extends Controller
 
         $query->pluck('user_id');
 
-        return $query->get();
+//        return $query->get();
+        return 'hello';
     }
 }
