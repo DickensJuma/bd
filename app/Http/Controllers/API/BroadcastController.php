@@ -98,6 +98,6 @@ class BroadcastController extends Controller
             return $item * 2;
         });
 
-        return $shipment->riders();
+        return $shipment->riders;
     }
 }
