@@ -26,4 +26,10 @@ class Shipment extends Model
     protected $spatialFields = [
         'location',
     ];
+
+    public function riders()
+    {
+        return $this->belongsToMany(User::class, 'shipments_users', 'shipment_id',
+            'user_id');
+    }
 }

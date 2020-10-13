@@ -22,7 +22,8 @@ class BroadcastController extends Controller
         }))->get(['id', 'name', 'phone']);
     }
 
-    public function dialARider(Request $request, $id){
+    public function dialARider(Request $request, $id)
+    {
         $this->validate($request, [
             'rider' => 'required'
         ]);
@@ -76,11 +77,25 @@ class BroadcastController extends Controller
         // get riders with their last location recorded
         $query->where('created_at', '>', Carbon::now()->subHours(1)->toDateTimeString());
 
-        // Within 5km radius of the customer
+        // get riders within 5km radius of the customer
         $query->distanceSphereExcludingSelf('location', $shipment->location, 5000);
 
+        // Select unique user
         $query->select('user_id')->distinct();
 
-        return $query->get();
+        $riders = $query->get();
+
+        if (!count($riders)){
+            return response()->json([
+                'msg' => 'No nearby riders available',
+                'success' => false
+            ], 404);
+        }
+
+        $riders->map(function ($item, $key) use ($shipment){
+            $rider = User::findOrFail($item->user_id);
+            $rider->shipments()->attach($shipment->id);
+            return $item * 2;
+        });
     }
 }

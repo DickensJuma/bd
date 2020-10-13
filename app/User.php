@@ -108,4 +108,10 @@ class User extends Authenticatable implements JwtSubject
     {
         return $this->hasOne(LocationTracking::class, 'user_id')->latest();
     }
+
+    public function shipments()
+    {
+        return $this->belongsToMany(Shipment::class, 'shipments_users', 'user_id',
+            'shipment_id');
+    }
 }
