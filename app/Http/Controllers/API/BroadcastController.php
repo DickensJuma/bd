@@ -85,18 +85,23 @@ class BroadcastController extends Controller
 
         $riders = $query->get();
 
-        if (!count($riders)){
+        if (!count($riders)) {
             return response()->json([
                 'msg' => 'No nearby riders available',
                 'success' => false
             ], 404);
         }
 
-        $riders->map(function ($item, $key) use ($shipment){
+        $tokens = array();
+
+        $riders->map(function ($item, $key) use ($shipment, $tokens) {
             $rider = User::findOrFail($item->user_id);
             $rider->shipments()->attach($shipment->id);
+
+            $token = FcmToken::latest()->where('rider_id', $rider->id)->first();
+            array_push($tokens, $token);
         });
 
-        return $shipment->riders;
+        return $tokens;
     }
 }
