@@ -45,29 +45,6 @@ class BroadcastController extends Controller
         ], 200);
     }
 
-    public function dialNearbyRider($shipmentId)
-    {
-        $user = new User;
-        $query = ($user)->newQuery();
-        $shipment = Shipment::findOrFail($shipmentId);
-
-        // get riders with their last location recorded
-        $query->where('role', 'rider')->whereHas('lastRiderLocation')
-            ->with('lastRiderLocation')->select(['id', 'name', 'phone']);
-
-        // Within the last 1 hour
-        $query->whereHas('lastRiderLocation', function (Builder $query) {
-            $query->where('created_at', '>',
-                Carbon::now()->subHours(1)->toDateTimeString()
-            );
-        });
-
-        // Within 5km radius of the customer
-//        $query->distanceSphereExcludingSelf('last_rider_location->location', $shipment->location, 5000);
-
-        return $query->get();
-    }
-
     public function dialNearbyRiders($shipmentId)
     {
         $loc = new LocationTracking;
@@ -92,18 +69,24 @@ class BroadcastController extends Controller
             ], 404);
         }
 
-//        $tokens = array();
+        $tokens = array();
 
-        $tokens = $riders->map(function ($item, $key) use ($shipment) {
+        $riders->map(function ($item, $key) use ($shipment, $tokens) {
             $rider = User::findOrFail($item->user_id);
             $rider->shipments()->attach($shipment->id);
 
             $token = FcmToken::latest()->where('rider_id', $rider->id)->first();
+            $message = 'Shipment ID: ' . $shipment->shipmentId;
+
+            RiderNotification::send_notification($rider->token, $message, $shipment);
 //            array_push($tokens, $token->token);
 
-            return $token;
+//            return $token;
         });
 
-        return $tokens;
+        return response()->json([
+            'msg' => count($riders) . ' rider(s) dialed!',
+            'status' => true
+        ], 200);
     }
 }
