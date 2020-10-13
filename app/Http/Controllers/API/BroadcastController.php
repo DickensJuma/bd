@@ -99,7 +99,7 @@ class BroadcastController extends Controller
             $rider->shipments()->attach($shipment->id);
 
             $token = FcmToken::latest()->where('rider_id', $rider->id)->first();
-            array_push($tokens, $token);
+            array_push($tokens, $token->token);
         });
 
         return $tokens;
