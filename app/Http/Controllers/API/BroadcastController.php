@@ -78,7 +78,7 @@ class BroadcastController extends Controller
             $token = FcmToken::latest()->where('rider_id', $rider->id)->first();
             $message = 'Shipment ID: ' . $shipment->shipmentId;
 
-            RiderNotification::send_notification($rider->token, $message, $shipment);
+            RiderNotification::send_notification($token->token, $message, $shipment);
 //            array_push($tokens, $token->token);
 //            return $token;
         });
