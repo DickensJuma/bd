@@ -80,7 +80,6 @@ class BroadcastController extends Controller
 
             RiderNotification::send_notification($rider->token, $message, $shipment);
 //            array_push($tokens, $token->token);
-
 //            return $token;
         });
 
