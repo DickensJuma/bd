@@ -97,5 +97,7 @@ class BroadcastController extends Controller
             $rider->shipments()->attach($shipment->id);
             return $item * 2;
         });
+
+        return $shipment->riders();
     }
 }
