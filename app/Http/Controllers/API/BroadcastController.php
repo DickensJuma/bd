@@ -92,14 +92,16 @@ class BroadcastController extends Controller
             ], 404);
         }
 
-        $tokens = array();
+//        $tokens = array();
 
-        $riders->map(function ($item, $key) use ($shipment, $tokens) {
+        $tokens = $riders->map(function ($item, $key) use ($shipment) {
             $rider = User::findOrFail($item->user_id);
             $rider->shipments()->attach($shipment->id);
 
             $token = FcmToken::latest()->where('rider_id', $rider->id)->first();
-            array_push($tokens, $token->token);
+//            array_push($tokens, $token->token);
+
+            return $token;
         });
 
         return $tokens;
