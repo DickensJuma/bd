@@ -95,7 +95,6 @@ class BroadcastController extends Controller
         $riders->map(function ($item, $key) use ($shipment){
             $rider = User::findOrFail($item->user_id);
             $rider->shipments()->attach($shipment->id);
-            return $item * 2;
         });
 
         return $shipment->riders;
