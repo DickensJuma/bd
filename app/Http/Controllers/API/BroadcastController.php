@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\DialNearbyRiders;
 use App\Events\DialRider;
 use App\FcmToken;
 use App\Helpers\FCM\RiderNotification;
@@ -69,9 +70,7 @@ class BroadcastController extends Controller
             ], 404);
         }
 
-        $tokens = array();
-
-        $riders->map(function ($item, $key) use ($shipment, $tokens) {
+        $riders->map(function ($item, $key) use ($shipment) {
             $rider = User::findOrFail($item->user_id);
             $rider->shipments()->attach($shipment->id);
 
@@ -79,9 +78,14 @@ class BroadcastController extends Controller
             $message = 'Shipment ID: ' . $shipment->shipmentId;
 
             RiderNotification::send_notification($token->token, $message, $shipment);
-//            array_push($tokens, $token->token);
-//            return $token;
         });
+
+        $data = array(
+            'riders' => $riders,
+            'shipment' => $shipment
+        );
+
+        broadcast(new DialNearbyRiders($data));
 
         return response()->json([
             'msg' => count($riders) . ' rider(s) dialed!',
