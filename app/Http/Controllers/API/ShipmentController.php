@@ -24,7 +24,7 @@ class ShipmentController extends Controller
         $shipments_assigned = Shipment::latest()->where('dialed_rider_id', $user->id)->whereNull('rider_id')
             ->where('dialed_to_nearby_riders', 0)->get();
 
-        $shipments = $shipments_nearby->merge($shipments_assigned)->latest('id')->all();
+        $shipments = $shipments_nearby->merge($shipments_assigned)->sortByDesc('created_at')->all();
 
         return response()->json([
             "message" => "success",
