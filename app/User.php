@@ -112,6 +112,6 @@ class User extends Authenticatable implements JwtSubject
     public function shipments()
     {
         return $this->belongsToMany(Shipment::class, 'shipments_users', 'user_id',
-            'shipment_id');
+            'shipment_id')->distinct();
     }
 }
