@@ -34,7 +34,7 @@ class DialNearbyRiders implements ShouldBroadcast
     {
         $channels = [];
 
-        foreach ($this->data->riders as $rider){
+        foreach ($this->data['riders'] as $rider){
             array_push($channels, new PrivateChannel('dialRider.' . $rider->user_id));
         }
 
@@ -42,7 +42,7 @@ class DialNearbyRiders implements ShouldBroadcast
     }
 
     public function broadcastWith(){
-        return ['shipment' => $this->data->shipment];
+        return ['shipment' => $this->data['shipment']];
     }
 
     public function broadcastAs()
