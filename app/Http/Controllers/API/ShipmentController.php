@@ -20,8 +20,7 @@ class ShipmentController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $shipments = $user->shipments->select(['id', 'order_id', 'rider_id', 'status', 'shipmentId', 'deliveryFee',
-            'total', 'seller_id', 'dialed_rider_id', 'dialed_to_nearby_riders', 'created_at', 'updated_at']);
+        $shipments = $user->shipments;
 //        $shipments = Shipment::latest()->where('dialed_rider_id', $user->id)->whereNull('rider_id')->get();
 
         return response()->json([
