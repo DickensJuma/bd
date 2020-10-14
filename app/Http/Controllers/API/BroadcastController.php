@@ -70,6 +70,8 @@ class BroadcastController extends Controller
             ], 404);
         }
 
+        $shipment->dialed_to_nearby_riders = 1;
+        $shipment->update();
         $riders->map(function ($item, $key) use ($shipment) {
             $rider = User::findOrFail($item->user_id);
             $rider->shipments()->attach($shipment->id);
