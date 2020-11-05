@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 
+/**
+ * @group  ResetPasswod
+ *
+ * APIs for managing Password Reset
+ */
 class ResetPasswordController extends Controller
 {
     use ResetsPasswords;

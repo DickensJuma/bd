@@ -19,6 +19,12 @@ use App\User;
 use Illuminate\Http\Request;
 use Auth;
 
+
+/**
+ * @group  Orders
+ *
+ * APIs for Managing orders
+ */
 class OrdersController extends Controller
 {
     /**

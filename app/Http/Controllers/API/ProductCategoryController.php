@@ -7,6 +7,11 @@ use App\ProductCategory;
 use Illuminate\Http\Request;
 use Image;
 
+/**
+ * @group  Product Category
+ *
+ * APIs for Managing Product Category
+ */
 class ProductCategoryController extends Controller
 {
     /**

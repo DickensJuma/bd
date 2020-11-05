@@ -7,7 +7,11 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-
+/**
+ * @group  Customer Profile
+ *
+ * APIs for Managing customer Profile
+ */
 class CustomerProfileController extends Controller
 {
     public function account(Request $request)

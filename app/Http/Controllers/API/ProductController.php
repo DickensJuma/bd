@@ -14,6 +14,11 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @group  Product
+ *
+ * APIs for Managing Products
+ */
 class ProductController extends Controller
 {
     /**

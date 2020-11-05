@@ -8,6 +8,11 @@ use App\Shipment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @group  Reports
+ *
+ * APIs for Managing Reports
+ */
 class ReportsController extends Controller
 {
     /**

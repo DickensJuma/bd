@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use App\log;
 use Illuminate\Http\Request;
 
+/**
+ * @group  Logs
+ *
+ * APIs for Controlling users Logs
+ */
 class LogsController extends Controller
 {
     /**

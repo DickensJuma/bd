@@ -10,7 +10,11 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Auth\Access\AuthorizationException;
 
-
+/**
+ * @group  Verification
+ *
+ * APIs for Managing account verification
+ */
 class VerificationController extends Controller
 {
     /*

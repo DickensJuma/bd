@@ -8,7 +8,11 @@ use App\Product;
 use App\Shipment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
+/**
+ * @group  Dashboard
+ *
+ * APIs for Managing User Dashboard.
+ */
 class DashboardController extends Controller
 {
     /**

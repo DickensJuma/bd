@@ -7,6 +7,11 @@ use App\LocationTracking;
 use Illuminate\Http\Request;
 use Auth;
 
+/**
+ * @group  Location Tracking
+ *
+ * APIs for Controlling Riders Location
+ */
 class LocationTrackingController extends Controller
 {
     public function CreateLocation(Request $request)

@@ -9,6 +9,11 @@ use App\ProductCategory;
 use App\SubCategory;
 use Illuminate\Http\Request;
 
+/**
+ * @group  Shop
+ *
+ * APIs for Managing Shops
+ */
 class ShopController extends Controller
 {
     /**

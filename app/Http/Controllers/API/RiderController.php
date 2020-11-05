@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Rider;
 use App\User;
 use Illuminate\Http\Request;
-
+/**
+ * @group  Rider
+ *
+ * APIs for Managing Riders
+ */
 class RiderController extends Controller
 {
     /**
@@ -40,7 +44,7 @@ class RiderController extends Controller
     {
         //
     }
-    
+
     public function riderDetail($id){
         return User::where('id',$id)->with('ride')->get();
     }

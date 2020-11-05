@@ -8,6 +8,11 @@ use App\order;
 use App\User;
 use Illuminate\Http\Request;
 
+/**
+ * @group  Delivery
+ *
+ * APIs for Managing Delivery of Items
+ */
 class DeliveryController extends Controller
 {
     /**
@@ -20,7 +25,7 @@ class DeliveryController extends Controller
         return Delivery::where('Rider_id', auth()->user()->id)->with('order')->get();
     }
     public function getShop($id){
-        
+
     }
     public function rider($id)
     {

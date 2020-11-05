@@ -8,7 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Validator;
 use Illuminate\Validation\ValidationException;
-
+/**
+ * @group  Coupons
+ *
+ * APIs for Managing Coupons
+ */
 class CouponsController extends Controller
 {
     /**

@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use App\SubCategory;
 use Illuminate\Http\Request;
 
+/**
+ * @group  Product Sub_Category
+ *
+ * APIs for Managing product Sub category
+ */
 class ProductSubCategoryController extends Controller
 {
     /**

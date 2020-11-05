@@ -6,6 +6,11 @@ use App\Brand;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+/**
+ * @group  Brands
+ *
+ * APIs for Managing Brands
+ */
 class BrandsController extends Controller
 {
     /**

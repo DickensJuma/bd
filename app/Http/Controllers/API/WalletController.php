@@ -9,6 +9,11 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @group  Wallet
+ *
+ * APIs for Managing Wallet transaction
+ */
 class WalletController extends Controller
 {
     public function walletBalance()

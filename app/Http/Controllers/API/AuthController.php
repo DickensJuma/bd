@@ -19,10 +19,21 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Mail;
 use JWTAuth;
 
-
+/**
+ * @group  Authentication
+ *
+ * APIs for Authenticating  users
+ */
 class AuthController extends Controller
 {
     use VerifiesEmails, SendPhoneVerificationCodeTrait;
+
+    /**
+     * Create a new Rider's account
+     *
+     * [Insert optional longer description of the API endpoint here.]
+     *
+     */
 
     public function createRiderAccount(Request $request)
     {
@@ -97,7 +108,12 @@ class AuthController extends Controller
             'message' => 'Unauthorised',
         ], 403);
     }
-
+    /**
+     * Verifying Rider's account
+     *
+     * [Insert optional longer description of the API endpoint here.]
+     *
+     */
     public function verifyRiderPhone(Request $request)
     {
         if ($request->app == 1) {
@@ -136,7 +152,14 @@ class AuthController extends Controller
             'message' => 'Unauthorised',
         ], 403);
     }
-
+    /**
+     * Login function of rider
+     *@bodyParam Phone Phone required phone of the Rider . Example: 0715929293
+     *@bodyParam Password Password required email address of the user . Example: ********
+     *@response {status: "success", data: {id: 1, Phone: "070303030"}}
+     * [Insert optional longer description of the API endpoint here.]
+     *
+     */
     public function loginRider(Request $request)
     {
         if ($request->app == 1) {
@@ -198,7 +221,12 @@ class AuthController extends Controller
             'message' => 'Unauthorised',
         ], 403);
     }
-
+    /**
+     * Allows a rider to reset passwod
+     *
+     * [Insert optional longer description of the API endpoint here.]
+     *
+     */
     public function resetPasswordRider(Request $request)
     {
         if ($request->app == 1) {
@@ -237,6 +265,19 @@ class AuthController extends Controller
         ], 403);
     }
 
+    /**
+     * Allow Users to register for an account
+     * @Unauthenticated
+     *@bodyParam name string required full name of the user . Example: Micheale Mwangi
+     *@bodyParam email email required email address of the user . Example: mike@gmail.com
+     * @bodyParam phone integar required phone number for the user . Example: 0701828384
+     * @bodyParam Type string required the account the user intend to reqister . Example: Wholesaler,retailer,customer or rider
+     * @bodyParam County string required County residence of the user . Example: Nairobi county
+     * @bodyParam Password  Password required user's password for authentication . Example:*******
+     * @bodyParam Password_confirmation Password required password for authentication . Example:*******
+     * [Insert optional longer description of the API endpoint here.]
+     * @response {"status":"success","data":{"name":"shem","email":"customer45@gmail.com","phone":"0715511302","county":"uasingishu","role":"customer","longitude":"0.01919191","latitude":"9.08888884","location_name":"eldoret","address":"30100","updated_at":"2020-11-05T08:09:18.000000Z","created_at":"2020-11-05T08:09:18.000000Z","id":16}}
+     */
     public function register(Request $request)
     {
         $this->validate($request, [
@@ -287,6 +328,14 @@ class AuthController extends Controller
         ], 200);
     }
 
+    /**
+     * Allow registered users to login
+     *@bodyParam email email required email address of the user . Example: mike@gmail.com
+     *@bodyParam Password  Password required user's password for authentication . Example:*******
+     *@response {status: "success", data: {id: 1, name: "Mac Nduati", email: "nduatishem@gmail.com",…}}
+     * [Insert optional longer description of the API endpoint here.]
+     *
+     */
     public function login(Request $request)
     {
         $this->validate($request, [
@@ -371,6 +420,12 @@ class AuthController extends Controller
 
     /**
      * @authenticated
+     */
+    /**
+     * Allow authenticated users to log out
+     *
+     * [Insert optional longer description of the API endpoint here.]
+     *
      */
     public function logout()
     {

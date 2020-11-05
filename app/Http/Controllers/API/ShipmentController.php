@@ -10,6 +10,11 @@ use App\Wallet;
 use App\WalletTransaction;
 use Illuminate\Http\Request;
 
+/**
+ * @group  Shipment
+ *
+ * APIs for controlling shipment
+ */
 class ShipmentController extends Controller
 {
     /**

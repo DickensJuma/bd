@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Newsletter;
 
+/**
+ * @group  Newsletter
+ *
+ * APIs for Controlling Newsletter
+ */
 class NewsletterController extends Controller
 {
     /**
