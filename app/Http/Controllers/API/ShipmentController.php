@@ -24,7 +24,12 @@ class ShipmentController extends Controller
      */
     public function index()
     {
-        $shipments = Shipment::latest()->where('dialed_rider_id', auth()->user()->id)->whereNull('rider_id')->get();
+        $user = auth()->user();
+        $shipments_nearby = $user->shipments;
+        $shipments_assigned = Shipment::latest()->where('dialed_rider_id', $user->id)->whereNull('rider_id')
+            ->where('dialed_to_nearby_riders', 0)->get();
+
+        $shipments = $shipments_nearby->merge($shipments_assigned)->sortByDesc('created_at')->flatten()->all();
 
         return response()->json([
             "message" => "success",

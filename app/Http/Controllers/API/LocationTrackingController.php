@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\LocationTracking;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -26,6 +27,7 @@ class LocationTrackingController extends Controller
             $newLocation->user_id = Auth::user()->id;;
             $newLocation->longitude = $request->longitude;
             $newLocation->latitude = $request->latitude;
+            $newLocation->location = new Point($request->latitude, $request->longitude);
             $newLocation->save();
 
             return response()->json([
