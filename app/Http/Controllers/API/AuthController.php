@@ -35,6 +35,14 @@ class AuthController extends Controller
      *
      */
 
+    public function verifyEmail($id)
+    {
+        $user = User::findOrFail($id);
+        $user->markEmailAsVerified();
+
+        return response()->json($user);
+    }
+
     public function createRiderAccount(Request $request)
     {
         if ($request->app == 1) {
