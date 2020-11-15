@@ -40,7 +40,10 @@ class AuthController extends Controller
         $user = User::findOrFail($id);
         $user->markEmailAsVerified();
 
-        return response()->json($user);
+        return response()->json([
+            "msg" => "successfully verified",
+            "user" => $user
+        ], 200);
     }
 
     public function createRiderAccount(Request $request)

@@ -21,7 +21,7 @@ Route::prefix('v1')->group(function () {
 
     //auth routes
     Route::post('auth/register', 'API\AuthController@register');
-    Route::get('verify-email', 'API\AuthController@verifyEmail');
+    Route::get('verify-email/{id}', 'API\AuthController@verifyEmail');
     Route::post('auth/login', 'API\AuthController@login');
     Route::post('auth/createRider', 'API\AuthController@createRiderAccount');
     Route::post('auth/verify_phone', 'API\AuthController@verifyRiderPhone');
