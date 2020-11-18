@@ -48,7 +48,16 @@ class ProductController extends Controller
             $query->select('id', 'name');
         }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status']);
     }
-
+    public function shopProducts($id)
+    {
+        return Product::where('user_id', $id)->latest()->with(array('category' => function ($query) {
+            $query->select('id', 'name');
+        }))->with(array('brand' => function ($query) {
+            $query->select('id', 'name');
+        }))->with(array('subcategory' => function ($query) {
+            $query->select('id', 'name');
+        }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status']);
+    }
     public function shop()
     {
         return $shop = WholesalerRetailer::latest()->get();
