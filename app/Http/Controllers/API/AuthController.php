@@ -35,6 +35,17 @@ class AuthController extends Controller
      *
      */
 
+    public function verifyEmail($id)
+    {
+        $user = User::findOrFail($id);
+        $user->markEmailAsVerified();
+
+        return response()->json([
+            "msg" => "successfully verified",
+            "user" => $user
+        ], 200);
+    }
+
     public function createRiderAccount(Request $request)
     {
         if ($request->app == 1) {
@@ -285,8 +296,6 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'phone' => 'required|phone:KE|min:10',
             'type' => 'required|string|in:customer,wholesaler,retailer,rider',
-            'county' => 'required|string',
-            'location_name' => 'required|string',
             'password' => 'required|string|min:8|same:password_confirmation',
             'password_confirmation' => 'required|string|min:8',
         ]);
