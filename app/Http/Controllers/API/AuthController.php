@@ -373,7 +373,8 @@ class AuthController extends Controller
             return response([
                 'status' => 'error',
                 'error' => 'Account has not been verified',
-                'msg' => 'Account Not Verified.'
+                'msg' => 'Account Not Verified.',
+                'token' => $token
             ], 400);
         }
 
@@ -390,7 +391,8 @@ class AuthController extends Controller
             ]);
         } else {
             return response([
-                'status' => 'success'
+                'status' => 'success',
+                'token' => $token
             ])->header('Authorization', $token);
         }
 
