@@ -399,7 +399,8 @@ class AuthController extends Controller
             ]);
         } else {
             return response([
-                'status' => 'success'
+                'status' => 'success',
+                'token' => $token
             ])->header('Authorization', $token);
         }
 
