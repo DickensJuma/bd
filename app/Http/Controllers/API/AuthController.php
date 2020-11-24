@@ -382,7 +382,8 @@ class AuthController extends Controller
             return response([
                 'status' => 'error',
                 'error' => 'Account has not been verified',
-                'msg' => 'Account Not Verified.'
+                'msg' => 'Account Not Verified.',
+                'token' => $token
             ], 400);
         }
 
