@@ -51,7 +51,7 @@ Route::prefix('v1')->group(function () {
     Route::post('search-categories', 'API\ShopController@searchCategories');
     Route::post('search-shops', 'API\ShopsController@searchShops');
     Route::post('sort-shops', 'API\ShopsController@sortShops');
-    Route::post('/email/verify/{id}/{hash}', 'API\VerificationController@verify')->name('verification.verify');
+    Route::post('/email/verify/{id}', 'API\VerificationController@verify')->name('verification.verify');
     Route::post('contact', 'API\ContactController@contact');
     Route::post('visited', 'API\ProductController@isVisited');
     Route::post('newsletter', 'API\NewsletterController@store');

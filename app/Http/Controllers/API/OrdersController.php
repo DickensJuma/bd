@@ -92,7 +92,7 @@ class OrdersController extends Controller
             if ($request->coupon_unique_id) {
                 $coupon = Coupon::where('unique_id', $request->coupon_unique_id)->firstOrFail();
                 $order->coupon_id = $coupon['id'];
-                $discount = $coupon->discount($request->total_price);
+                $discount = $coupon->discount($request->total_price, $coupon->id);
                 $order->discount = $discount;
                 $order->sub_total = $request->total_price - $discount;
             }
