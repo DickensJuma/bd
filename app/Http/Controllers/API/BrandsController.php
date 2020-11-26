@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Brand;
+use App\Product;
+use App\ProductCategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -22,10 +24,17 @@ class BrandsController extends Controller
     {
         return Brand::orderBy('name')->with('subcategory.category')->get();
     }
-
+    public function categoryBrands()
+    {
+        return ProductCategory::orderBy('name')->with('subcategory.brands')->get();
+    }
+    public function brandproducts($id){
+        return Product::orderBy('title')->where('brand_id', $id)->where('disabled', 'enabled')->with('brand')->with('files')->get();;
+    }
     public function getBrands($id){
         return Brand::orderBy('name')->where('sub_category_id', $id)->with('subcategory.category')->with('product')->get();
     }
+    
 
     /**
      * Store a newly created resource in storage.
