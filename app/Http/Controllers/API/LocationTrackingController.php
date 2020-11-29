@@ -44,6 +44,6 @@ class LocationTrackingController extends Controller
 
     public function riderLocation($id)
     {
-        return LocationTracking::latest()->where('rider_id', $id)->get();
+        return LocationTracking::latest()->where('user_id', $id)->get();
     }
 }
