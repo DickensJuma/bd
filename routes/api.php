@@ -62,7 +62,6 @@ Route::prefix('v1')->group(function () {
         Route::post('search-products', 'API\ShopController@searchProducts');
         Route::post('filter-products', 'API\ProductController@filterProducts');
 
-
         Route::group(['middleware' => 'jwt.auth'], function () {
             Route::post('apply-coupon', 'API\CouponsController@applyCoupon');
             Route::post('order', 'API\OrdersController@store');
@@ -81,6 +80,7 @@ Route::prefix('v1')->group(function () {
 
         //shopLocal
         Route::group(['middleware' => ['auth.role:admin', 'jwt.auth']], function () {
+            Route::get('rider_location/{id}', 'API\LocationTrackingController@riderLocation');
             //shopLocal
             Route::group(['middleware' => ['auth.role:admin', 'jwt.auth']], function () {
                 //User

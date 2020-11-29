@@ -41,4 +41,9 @@ class LocationTrackingController extends Controller
             'message' => 'Unauthorised',
         ], 403);
     }
+
+    public function riderLocation($id)
+    {
+        return LocationTracking::latest()->where('rider_id', $id)->get();
+    }
 }
