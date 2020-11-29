@@ -44,6 +44,8 @@ Route::prefix('v1')->group(function () {
     Route::get('featured-category', 'API\ProductCategoryController@featuredCategory');
     Route::get('featured-products', 'API\ProductController@featuredProducts');
     Route::get('categories', 'API\ShopController@getCategories');
+    Route::get('brands', 'API\BrandsController@index');
+    Route::get('brandProducts/{id}', 'API\BrandsController@brandproducts');
     Route::get('shops', 'API\ShopsController@getShops');
     Route::get('shop-products/{id}', 'API\ProductController@shopProducts');
     Route::post('search-categories', 'API\ShopController@searchCategories');

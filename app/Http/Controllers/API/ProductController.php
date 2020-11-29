@@ -50,13 +50,7 @@ class ProductController extends Controller
     }
     public function shopProducts($id)
     {
-        return Product::where('user_id', $id)->latest()->with(array('category' => function ($query) {
-            $query->select('id', 'name');
-        }))->with(array('brand' => function ($query) {
-            $query->select('id', 'name');
-        }))->with(array('subcategory' => function ($query) {
-            $query->select('id', 'name');
-        }))->get(['id', 'title', 'price', 'category_id', 'brand_id', 'sub_category_id', 'uniqueId', 'status']);
+        return Product::where('user_id', $id)->latest()->where('disabled', 'enabled')->with('brand')->with('files')->get();
     }
     public function shop()
     {
