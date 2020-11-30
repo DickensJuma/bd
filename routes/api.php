@@ -55,6 +55,7 @@ Route::prefix('v1')->group(function () {
     Route::post('contact', 'API\ContactController@contact');
     Route::post('visited', 'API\ProductController@isVisited');
     Route::post('newsletter', 'API\NewsletterController@store');
+    Route::get('category-sub-categories', 'API\FilterController@subCategories');
     Route::prefix('shopLocal')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
