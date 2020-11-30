@@ -20,7 +20,7 @@ class FilterController extends Controller
             $sub_categories = SubCategory::orderBy('name')->get();
         }
 
-        if ($category_id && is_null($sub)) {
+        if ($category_id && !$sub) {
             $brands = Brand::orderBy('name')->where('subcategory', function ($query) use ($category_id) {
                 return $query->where('product_category_id', $category_id);
             })->get();
@@ -29,7 +29,7 @@ class FilterController extends Controller
             $brands = Brand::orderBy('name')->where('sub_category_id', $sub)->get();
         }
 
-        if (is_null($category_id) && is_null($sub)) {
+        if (!$category_id && !$sub) {
             $brands = Brand::orderBy('name')->get();
         }
 
