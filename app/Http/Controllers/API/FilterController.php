@@ -21,9 +21,9 @@ class FilterController extends Controller
         }
 
         if ($category_id && !$sub) {
-            $brands = Brand::orderBy('name')->where('subcategory', function ($query) use ($category_id) {
+            $brands = Brand::orderBy('name')->with(['subcategory', function ($query) use ($category_id) {
                 return $query->where('product_category_id', $category_id);
-            })->get();
+            }])->get();
         }
         if ($sub) {
             $brands = Brand::orderBy('name')->where('sub_category_id', $sub)->get();
