@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
  */
 class BrandsController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *
