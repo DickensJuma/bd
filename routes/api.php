@@ -55,6 +55,7 @@ Route::prefix('v1')->group(function () {
     Route::post('contact', 'API\ContactController@contact');
     Route::post('visited', 'API\ProductController@isVisited');
     Route::post('newsletter', 'API\NewsletterController@store');
+    Route::get('category-sub-categories', 'API\FilterController@subCategories');
     Route::prefix('shopLocal')->group(function () {
         Route::get('categories', 'API\ShopController@getCategories');
         Route::get('products/{id}', 'API\ShopController@getCategoryProducts');
@@ -63,7 +64,6 @@ Route::prefix('v1')->group(function () {
         Route::get('details/{id}', 'API\ShopController@show');
         Route::post('search-products', 'API\ShopController@searchProducts');
         Route::post('filter-products', 'API\ProductController@filterProducts');
-
 
         Route::group(['middleware' => 'jwt.auth'], function () {
             Route::post('apply-coupon', 'API\CouponsController@applyCoupon');
@@ -83,6 +83,7 @@ Route::prefix('v1')->group(function () {
 
         //shopLocal
         Route::group(['middleware' => ['auth.role:admin', 'jwt.auth']], function () {
+            Route::get('rider_location/{id}', 'API\LocationTrackingController@riderLocation');
             //shopLocal
             Route::group(['middleware' => ['auth.role:admin', 'jwt.auth']], function () {
                 //User
