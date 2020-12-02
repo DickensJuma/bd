@@ -44,10 +44,14 @@ class FilterController extends Controller
             $query->where('sub_category_id', $request->query('sub'));
         }
 
+        $products = $query->orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query) {
+            $query->where('verification', 'verified');
+        })->where('status', 1)->where('disabled', 'enabled')->with('brand')->with('files')->with('category')->get();
+
         return response()->json([
             'sub' => $sub_categories,
             'brands' => $brands,
-            'products' => $query->get()
+            'products' => $products
         ], 200);
     }
 }
