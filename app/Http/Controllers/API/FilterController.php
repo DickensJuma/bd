@@ -45,8 +45,8 @@ class FilterController extends Controller
         }
 
         if ($request->query('search')) {
-            $query->where('title', 'like', '%' . $request->query('search') . '%')
-                ->orWhere('description', 'like', '%' . $request->query('search') . '%');
+            $query->where('title', 'LIKE', '%' . $request->query('search') . '%')
+                ->orWhere('description', 'LIKE', '%' . $request->query('search') . '%');
         }
 
         $products = $query->orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query) {
