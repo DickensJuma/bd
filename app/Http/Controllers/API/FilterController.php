@@ -31,7 +31,7 @@ class FilterController extends Controller
         }
 
 
-        $query = Product::query();
+        $query = Product::newQuery();
 
         if ($request->query('search')) {
             $query->where('title', 'LIKE', '%' . $request->query('search') . '%')
