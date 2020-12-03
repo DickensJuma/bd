@@ -32,21 +32,22 @@ class FilterController extends Controller
 
 
         $query = Product::query();
-        if ($request->query('category')) {
-            $query->where('category_id', $request->query('category'));
+
+        if ($request->query('search')) {
+            $query->where('title', 'LIKE', '%' . $request->query('search') . '%')
+                ->orWhere('description', 'LIKE', '%' . $request->query('search') . '%');
         }
 
-        if ($request->query('brand')) {
-            $query->where('brand_id', $request->query('brand'));
+        if ($request->query('category')) {
+            $query->where('category_id', $request->query('category'));
         }
 
         if ($request->query('sub')) {
             $query->where('sub_category_id', $request->query('sub'));
         }
 
-        if ($request->query('search')) {
-            $query->where('title', 'LIKE', '%' . $request->query('search') . '%')
-                ->orWhere('description', 'LIKE', '%' . $request->query('search') . '%');
+        if ($request->query('brand')) {
+            $query->where('brand_id', $request->query('brand'));
         }
 
         $products = $query->orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query) {
