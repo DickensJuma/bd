@@ -14,6 +14,7 @@ class FilterController extends Controller
     {
         $category_id = $request->query('category');
         $sub = $request->query('sub');
+        $brands = array();
 
         if ($category_id) {
             $sub_categories = SubCategory::orderBy('name')->where('product_category_id', $category_id)->get();
