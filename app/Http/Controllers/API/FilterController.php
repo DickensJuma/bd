@@ -31,11 +31,13 @@ class FilterController extends Controller
         }
 
 
-        $query = Product::newQuery();
+        $query = Product::query();
 
         if ($request->query('search')) {
-            $query->where('title', 'LIKE', '%' . $request->query('search') . '%')
-                ->orWhere('description', 'LIKE', '%' . $request->query('search') . '%');
+            $query->where(function ($q) use ($request){
+                $q->where('title', 'LIKE', '%' . $request->query('search') . '%')
+                    ->orWhere('description', 'LIKE', '%' . $request->query('search') . '%');
+            });
         }
 
         if ($request->query('category')) {
