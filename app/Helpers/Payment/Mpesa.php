@@ -2,6 +2,8 @@
 
 namespace App\Helpers\Payment;
 
+use GuzzleHttp\Psr7\Request;
+
 class Mpesa
 {
     /**
@@ -116,5 +118,4 @@ class Mpesa
         $response = self::submit_request($url, $data);
         return $response;
     }
-
 }
