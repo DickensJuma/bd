@@ -194,10 +194,6 @@ class AuthController extends Controller
             $log->ip_address = $request->ip();
             $log->save();
 
-            if ($request->phone == '+254770642944'){
-                $user->markPhoneAsVerified();
-            }
-
             if (!$user->hasVerifiedPhone()) {
                 $code = random_int(100000, 999999);
                 $user->verification_code = $code;

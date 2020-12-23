@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\VasSms\Vas;
 use App\Http\Controllers\Controller;
 use App\Shipment;
 use App\WalletTransaction;
@@ -64,6 +65,11 @@ class WalletController extends Controller
             'success'=>true,
             'data'=>$data
         ], 200);
+    }
+
+    public function testSMS()
+    {
+        return Vas::send_sms('254715810055', 'Hello');
     }
 
 //    public function ipay(Request $request)
