@@ -94,19 +94,19 @@ class AuthController extends Controller
                 $rider->save();
             });
 
-            if ($this->sendPhoneVerificationCode(substr($request->phone, 1), $code)) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Account created successfully',
-                ], 200);
-            }
-
-//            if (Vas::send_sms(substr($request->phone, 1), "Your Transmall verification code is " . $code)) {
+//            if ($this->sendPhoneVerificationCode(substr($request->phone, 1), $code)) {
 //                return response()->json([
 //                    'success' => true,
 //                    'message' => 'Account created successfully',
 //                ], 200);
 //            }
+
+            if (Vas::send_sms(substr($request->phone, 1), "Your Transmall verification code is " . $code)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Account created successfully',
+                ], 200);
+            }
 
             return response()->json([
                 'success' => false,
@@ -199,13 +199,6 @@ class AuthController extends Controller
                 $user->verification_code = $code;
                 $user->update();
 
-//                if (!$this->sendPhoneVerificationCode(substr($request->phone, 1), $code)){
-//                    return response()->json([
-//                        'success' => false,
-//                        'message' => 'Code not sent',
-//                    ], 403);
-//                }
-
                 $message = "Your Transmall verification code is " . $code;
                 if (!Vas::send_sms(substr($request->phone, 1), $message)) {
                     return response()->json([
@@ -241,13 +234,13 @@ class AuthController extends Controller
                 'phone' => 'required|phone:KE|min:10',
             ]);
 
-            if ($user = User::where('phone', $request->phone)->firstOrFail()) {
+            if ($user = User::where('phone', $request->phone)->first()) {
                 $password = substr(md5(time() . $user->id), 0, 10);
                 $user->password = bcrypt($password);
                 $user->update();
 
                 $message = "Hey! Your One-Time-Password is " . $password . ". Use it to Login and reset your password";
-                if (Vas::send_sms($request->phone, $message)) {
+                if (Vas::send_sms(substr($request->phone, 1), $message)) {
                     return response()->json([
                         'success' => true,
                         'message' => 'OTP sent to your phone',
