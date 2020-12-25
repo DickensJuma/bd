@@ -101,17 +101,11 @@ class AuthController extends Controller
 //                ], 200);
 //            }
 
-            if (Vas::send_sms(substr($request->phone, 1), "Your Transmall verification code is " . $code)) {
+            $resp = Vas::send_sms(substr($request->phone, 1), "Your Transmall verification code is " . $code);
                 return response()->json([
                     'success' => true,
                     'message' => 'Account created successfully',
                 ], 200);
-            }
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Verification code not sent',
-            ], 401);
         }
 
         return response()->json([
@@ -201,12 +195,6 @@ class AuthController extends Controller
 
                 $message = "Your Transmall verification code is " . $code;
                 $resp = Vas::send_sms(substr($request->phone, 1), $message);
-                if (!$resp->ok()) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Code not sent',
-                    ], 403);
-                }
             }
 
             return response()->json([
