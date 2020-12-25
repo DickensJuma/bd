@@ -201,10 +201,10 @@ class AuthController extends Controller
 
                 $message = "Your Transmall verification code is " . $code;
                 $resp = Vas::send_sms(substr($request->phone, 1), $message);
-                if ($resp != "Records Queued") {
+                if (!$resp->ok()) {
                     return response()->json([
                         'success' => false,
-                        'message' => $resp,
+                        'message' => 'Code not sent',
                     ], 403);
                 }
             }
