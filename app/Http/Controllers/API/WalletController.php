@@ -69,7 +69,7 @@ class WalletController extends Controller
 
     public function testSMS()
     {
-        return Vas::send_sms('254715810055', 'Hello');
+        return Vas::send_sms('254770916246', 'Hello testing');
     }
 
 //    public function ipay(Request $request)

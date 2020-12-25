@@ -200,10 +200,11 @@ class AuthController extends Controller
                 $user->update();
 
                 $message = "Your Transmall verification code is " . $code;
-                if (!Vas::send_sms(substr($request->phone, 1), $message)) {
+                $resp = Vas::send_sms(substr($request->phone, 1), $message);
+                if ($resp != "Records Queued") {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Code not sent',
+                        'message' => $resp,
                     ], 403);
                 }
             }
@@ -212,7 +213,8 @@ class AuthController extends Controller
                 'success' => true,
                 'verified' => $user->hasVerifiedPhone() ? true : false,
                 'token' => $token,
-                'user' => $user
+                'user' => $user,
+                'phone' => $request->phone
             ]);
         }
 
@@ -250,6 +252,7 @@ class AuthController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Could not send password reset link',
+                    'phone' => $request->phone,
                 ], 400);
             }
 
