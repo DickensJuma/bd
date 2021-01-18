@@ -21,6 +21,7 @@ Route::prefix('v1')->group(function () {
 
     //auth routes
     Route::post('auth/register', 'API\AuthController@register');
+    Route::post('sms_test', 'API\WalletController@testSMS');
     Route::get('verify-email/{id}', 'API\AuthController@verifyEmail');
     Route::post('auth/login', 'API\AuthController@login');
     Route::post('auth/createRider', 'API\AuthController@createRiderAccount');
@@ -28,6 +29,7 @@ Route::prefix('v1')->group(function () {
     Route::post('auth/loginRider', 'API\AuthController@loginRider');
     Route::post('auth/resetPasswordRider', 'API\AuthController@resetPasswordRider');
     Route::get('clear-shipment', 'API\ShipmentController@clearShipments');
+//    Route::post('ipay', 'API\WalletController@ipay');
 
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('auth/user', 'API\AuthController@user');
@@ -47,6 +49,7 @@ Route::prefix('v1')->group(function () {
     Route::get('brands', 'API\BrandsController@index');
     Route::get('brandProducts/{id}', 'API\BrandsController@brandproducts');
     Route::get('shops', 'API\ShopsController@getShops');
+    Route::get('wholesalers', 'API\ShopsController@getWholesalers');
     Route::get('shop-products/{id}', 'API\ProductController@shopProducts');
     Route::post('search-categories', 'API\ShopController@searchCategories');
     Route::post('search-shops', 'API\ShopsController@searchShops');

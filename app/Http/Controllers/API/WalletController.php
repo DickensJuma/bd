@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\VasSms\Vas;
 use App\Http\Controllers\Controller;
 use App\Shipment;
 use App\WalletTransaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 /**
  * @group  Wallet
@@ -64,4 +66,37 @@ class WalletController extends Controller
             'data'=>$data
         ], 200);
     }
+
+    public function testSMS()
+    {
+        return Vas::send_sms('254770916246', 'Hello testing');
+    }
+
+//    public function ipay(Request $request)
+//    {
+//        $fields = array(
+//            "live"=> "0",
+//            "oid"=> "h63673",
+//            "inv"=> "112020102292999",
+//            "ttl"=> "900",
+//            "tel"=> "256715810055",
+//            "eml"=> "kajuej@gmailo.com",
+//            "vid"=> "demo",
+//            "curr"=> "KES",
+//            "p1"=> "airtel",
+//            "p2"=> "020102292999",
+//            "p3"=> "",
+//            "p4"=> "900",
+//            "cbk"=> env('APP_URL').'api/v1/callback',
+//            "cst"=> "1",
+//            "crl"=> "2",
+//        );
+//        $datastring =  $fields['live'].$fields['oid'].$fields['inv'].$fields['ttl'].$fields['tel'].$fields['eml'].$fields['vid'].$fields['curr'].$fields['p1'].$fields['p2'].$fields['p3'].$fields['p4'].$fields['cbk'].$fields['cst'].$fields['crl'];
+//        $hashkey ="demoCHANGED";
+//        $generated_hash = hash_hmac('sha1',$datastring , $hashkey);
+//        array_push($fields, array(
+//            'hsh' => $generated_hash
+//        ));
+//        return Http::post('https://payments.ipayafrica.com/v3/ke', $fields);
+//    }
 }

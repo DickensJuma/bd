@@ -53,6 +53,10 @@ class FilterController extends Controller
             $query->where('brand_id', $request->query('brand'));
         }
 
+        if ($request->query('seller')) {
+            $query->where('user_id', $request->query('seller'));
+        }
+
         $products = $query->orderBy('visitors', 'Desc')->whereHas('wholesaler.shop', function ($query) {
             $query->where('verification', 'verified');
         })->where('status', 1)->where('disabled', 'enabled')->with('brand')->with('files')->with('category')->get();

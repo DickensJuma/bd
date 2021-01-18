@@ -94,24 +94,18 @@ class AuthController extends Controller
                 $rider->save();
             });
 
-            if ($this->sendPhoneVerificationCode(substr($request->phone, 1), $code)) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Account created successfully',
-                ], 200);
-            }
-
-//            if (Vas::send_sms(substr($request->phone, 1), "Your Transmall verification code is " . $code)) {
+//            if ($this->sendPhoneVerificationCode(substr($request->phone, 1), $code)) {
 //                return response()->json([
 //                    'success' => true,
 //                    'message' => 'Account created successfully',
 //                ], 200);
 //            }
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Verification code not sent',
-            ], 401);
+            $resp = Vas::send_sms(substr($request->phone, 1), "Your Transmall verification code is " . $code);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Account created successfully',
+                ], 200);
         }
 
         return response()->json([
@@ -194,36 +188,21 @@ class AuthController extends Controller
             $log->ip_address = $request->ip();
             $log->save();
 
-            if ($request->phone == '+254770642944'){
-                $user->markPhoneAsVerified();
-            }
-
             if (!$user->hasVerifiedPhone()) {
                 $code = random_int(100000, 999999);
                 $user->verification_code = $code;
                 $user->update();
 
-//                if (!$this->sendPhoneVerificationCode(substr($request->phone, 1), $code)){
-//                    return response()->json([
-//                        'success' => false,
-//                        'message' => 'Code not sent',
-//                    ], 403);
-//                }
-
                 $message = "Your Transmall verification code is " . $code;
-                if (!Vas::send_sms(substr($request->phone, 1), $message)) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Code not sent',
-                    ], 403);
-                }
+                $resp = Vas::send_sms(substr($request->phone, 1), $message);
             }
 
             return response()->json([
                 'success' => true,
                 'verified' => $user->hasVerifiedPhone() ? true : false,
                 'token' => $token,
-                'user' => $user
+                'user' => $user,
+                'phone' => $request->phone
             ]);
         }
 
@@ -245,13 +224,13 @@ class AuthController extends Controller
                 'phone' => 'required|phone:KE|min:10',
             ]);
 
-            if ($user = User::where('phone', $request->phone)->firstOrFail()) {
+            if ($user = User::where('phone', $request->phone)->first()) {
                 $password = substr(md5(time() . $user->id), 0, 10);
                 $user->password = bcrypt($password);
                 $user->update();
 
                 $message = "Hey! Your One-Time-Password is " . $password . ". Use it to Login and reset your password";
-                if (Vas::send_sms($request->phone, $message)) {
+                if (Vas::send_sms(substr($request->phone, 1), $message)) {
                     return response()->json([
                         'success' => true,
                         'message' => 'OTP sent to your phone',
@@ -261,6 +240,7 @@ class AuthController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Could not send password reset link',
+                    'phone' => $request->phone,
                 ], 400);
             }
 
