@@ -49,6 +49,21 @@ class DashboardController extends Controller
         );
         return ['data' => $data];
     }
+    public function UserDashboard()
+    {
+        $user_id = auth()->user()->id;
+        $total_orders  = Shipment::where('seller_id', $user_id)->get()->count();
+        $total_sales =Shipment::where('seller_id', $user_id)->get()->sum('total');
+        $total_instock = Product::where('user_id', $user_id)->where('status',1)->count();
+        $total_outOfStock = Product::where('user_id', $user_id)->where('status',0)->count();
+        $data = array(
+            'total_products' => $total_orders,
+            'total_sales' => $total_sales,
+            'total_instock' =>  $total_instock,
+            'total_outstock' =>  $total_outOfStock,
+        );
+        return ['data' => $data];
+    }
     public function RiderDash()
     {
         $user_id = auth()->user()->id;

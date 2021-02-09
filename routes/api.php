@@ -167,6 +167,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('Usersales', 'API\DashboardController@getMonthlyUserSales');
                 Route::get('Uservalue', 'API\DashboardController@getMonthlyUserSalesValue');
                 Route::get('Userdash', 'API\DashboardController@UserDash');
+                Route::get('Userdashboard', 'API\DashboardController@UserDashboard');
                 Route::post('shopping-report', 'API\ReportsController@RetailerShoppingReports');
             });
         });
